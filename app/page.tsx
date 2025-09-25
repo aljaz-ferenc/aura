@@ -1,6 +1,8 @@
 "use client";
 
-import { Chord, Interval, Note } from "@/lib/engine/Note";
+import { Chord } from "@/lib/engine/Chord";
+import { Interval } from "@/lib/engine/Interval";
+import { Note } from "@/lib/engine/Note";
 
 const note1 = new Note("D4");
 const note2 = new Note("E4");
