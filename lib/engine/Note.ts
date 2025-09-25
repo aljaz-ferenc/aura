@@ -1,50 +1,12 @@
 import { sampler } from "@/lib/chordSmith";
 
-export type Accidentals = { sharps: number } | { flats: number };
-
-const NOTES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
-const INTERVAL_QUALITIES = {
-  P: [0, 3, 4, 7, 8, 11], // Perfect: 1, 4, 5, 8, 11, 12
-  M: [1, 2, 5, 6, 9, 10], // Major: 2, 3, 6, 7, 9, 10
-  m: [1, 2, 5, 6, 9, 10], // Minor (same distances, different context)
-  d: [0, 3, 4, 7, 8, 11], // Diminished
-  A: [1, 2, 5, 6, 9, 10], // Augmented
-};
-
-const INTERVAL_SEMITONES = {
-  P1: 0,
-  d2: 0,
-  m2: 1,
-  a1: 1,
-  M2: 2,
-  d3: 2,
-  m3: 3,
-  a2: 3,
-  M3: 4,
-  d4: 4,
-  P4: 5,
-  a3: 5,
-  d5: 6,
-  a4: 6,
-  P5: 7,
-  d6: 7,
-  m6: 8,
-  a5: 8,
-  M6: 9,
-  d7: 9,
-  m7: 10,
-  a6: 10,
-  M7: 11,
-  d8: 11,
-  P8: 12,
-  a7: 12,
-};
+export type Accidentals = { sharps: number; flats: number };
 
 export class Note {
   base: string;
   octave: number;
   label: string;
-  accidentals: Accidentals;
+  accidentals: Accidentals = { sharps: 0, flats: 0 };
 
   constructor(label: string) {
     const match = label.match(/^([A-Ga-g])([#b]*)(\d+)$/);
@@ -55,15 +17,106 @@ export class Note {
 
     const [, base, accidentalStr, octaveStr] = match;
     this.label = label;
-    this.base = base;
+    this.base = base.toUpperCase();
     this.octave = +octaveStr;
-    this.accidentals = accidentalStr.startsWith("#")
-      ? { sharps: accidentalStr.length }
-      : { flats: accidentalStr.length };
+
+    if (accidentalStr.includes("#")) {
+      this.accidentals = { sharps: accidentalStr.length, flats: 0 };
+    } else if (accidentalStr.includes("b")) {
+      this.accidentals = { sharps: 0, flats: accidentalStr.length };
+    } else {
+      this.accidentals = { sharps: 0, flats: 0 };
+    }
   }
 
   async play() {
     await sampler.playNote(this.label);
+  }
+
+  private static readonly MAJOR_SCALES: { [key: string]: string[] } = {
+    C: ["C", "D", "E", "F", "G", "A", "B"],
+    D: ["D", "E", "F#", "G", "A", "B", "C#"],
+    E: ["E", "F#", "G#", "A", "B", "C#", "D#"],
+    F: ["F", "G", "A", "Bb", "C", "D", "E"],
+    G: ["G", "A", "B", "C", "D", "E", "F#"],
+    A: ["A", "B", "C#", "D", "E", "F#", "G#"],
+    B: ["B", "C#", "D#", "E", "F#", "G#", "A#"],
+  };
+
+  // Semitones for each scale degree (1-based index)
+  private static readonly MAJOR_SCALE_SEMITONES = [0, 2, 4, 5, 7, 9, 11];
+
+  transpose(intervalLabel: string): Note {
+    const match = intervalLabel.match(/^([A]+|[d]+|P|M|m)(\d+)$/);
+    if (!match) throw new Error(`Invalid interval: ${intervalLabel}`);
+
+    const [, quality, numberStr] = match;
+    const number = parseInt(numberStr);
+
+    const majorScale = Note.MAJOR_SCALES[this.base];
+    if (!majorScale) throw new Error(`Invalid base note: ${this.base}`);
+
+    const scaleIndex = (number - 1) % 7;
+    const targetNoteBase = majorScale[scaleIndex];
+
+    const octaveChange = Math.floor((number - 1) / 7);
+    const newOctave = this.octave + octaveChange;
+
+    const naturalSemitones =
+      Note.MAJOR_SCALE_SEMITONES[scaleIndex] + octaveChange * 12;
+
+    const qualityAdjustment = this.getQualityAdjustment(quality, number);
+    const requiredSemitones = naturalSemitones + qualityAdjustment;
+
+    const accidentals = this.calculateAccidentals(
+      targetNoteBase,
+      requiredSemitones - naturalSemitones,
+    );
+
+    return new Note(
+      `${targetNoteBase.replace(/[#b]/, "")}${accidentals}${newOctave}`,
+    );
+  }
+
+  private getQualityAdjustment(quality: string, number: number): number {
+    const isPerfect = [1, 4, 5, 8].includes(((number - 1) % 7) + 1);
+
+    const adjustments: { [key: string]: number } = {
+      P: 0,
+      M: 0, // Perfect/Major: no change from major scale
+      m: -1, // Minor: 1 semitone down from major
+      d: isPerfect ? -1 : -2, // Diminished: 1 down from perfect, 2 down from major
+      A: 1, // Augmented: 1 up
+      AA: 2,
+      AAA: 3, // Multiple augmentations
+      dd: isPerfect ? -2 : -3, // Double diminished
+      ddd: isPerfect ? -3 : -4, // Triple diminished
+    };
+
+    return adjustments[quality] || 0;
+  }
+
+  private calculateAccidentals(
+    targetNoteBase: string,
+    semitoneAdjustment: number,
+  ): string {
+    // Remove existing accidentals from the scale note and apply adjustment
+    const baseNote = targetNoteBase.replace(/[#b]/, "");
+    const baseSemitones =
+      Note.MAJOR_SCALE_SEMITONES[
+        ["C", "D", "E", "F", "G", "A", "B"].indexOf(baseNote)
+      ];
+
+    // Count existing accidentals in the scale note
+    const existingSharps = (targetNoteBase.match(/#/g) || []).length;
+    const existingFlats = (targetNoteBase.match(/b/g) || []).length;
+    const existingAdjustment = existingSharps - existingFlats;
+
+    const totalAdjustment = existingAdjustment + semitoneAdjustment;
+
+    if (totalAdjustment > 0) return "#".repeat(totalAdjustment);
+    if (totalAdjustment < 0) return "b".repeat(Math.abs(totalAdjustment));
+    return "";
   }
 }
 
