@@ -26,48 +26,53 @@ const baseDistances: Record<string, number> = {
 };
 
 export function Interval(label: string): ParsedInterval {
-  // Match examples: P1, m2, M3, A4, aa4, d5, dd7
   const match = label.match(/^(P|M|m|a+|d+)(\d+)$/);
-
   if (!match) {
     throw new Error(`Invalid interval label: ${label}`);
   }
 
   const [, qualityStr, quantityStr] = match;
+  const quantity = Number(quantityStr);
+
+  const octaveDiff = Math.floor((quantity - 1) / 7);
+  const simpleQuantity = quantity - octaveDiff * 7;
 
   let distance = 0;
-  distance = baseDistances[label];
 
-  // if diminished, take distance of minor or perfect interval and subtract amount of ds
-  if (qualityStr.startsWith("d")) {
-    if (`m${quantityStr}` in baseDistances) {
-      const baseDistance = baseDistances[`m${quantityStr}`];
-      distance = baseDistance - qualityStr.length;
+  if (qualityStr === "M" || qualityStr === "m") {
+    // major/minor intervals
+    const majorDistance = baseDistances[`M${simpleQuantity}`];
+    if (qualityStr === "M") {
+      distance = majorDistance;
+    } else {
+      distance = majorDistance - 1; // minor is 1 semitone smaller
     }
-
-    if (`P${quantityStr}` in baseDistances) {
-      const baseDistance = baseDistances[`P${quantityStr}`];
-      distance = baseDistance - qualityStr.length;
+  } else if (qualityStr === "P") {
+    // perfect intervals
+    distance = baseDistances[`P${simpleQuantity}`];
+  } else if (qualityStr.startsWith("a")) {
+    // augmented
+    const base =
+      baseDistances[`M${simpleQuantity}`] ??
+      baseDistances[`P${simpleQuantity}`];
+    distance = base + qualityStr.length;
+  } else if (qualityStr.startsWith("d")) {
+    // diminished
+    if (`M${simpleQuantity}` in baseDistances) {
+      const base = baseDistances[`M${simpleQuantity}`];
+      distance = base - 1 - (qualityStr.length - 1); // m = 1 d, extra ds keep subtracting
+    } else if (`P${simpleQuantity}` in baseDistances) {
+      const base = baseDistances[`P${simpleQuantity}`];
+      distance = base - qualityStr.length;
     }
   }
 
-  // if augumented, take distance of major or perfect interval and add amount of as
-  if (qualityStr.startsWith("a")) {
-    if (`M${quantityStr}` in baseDistances) {
-      const baseDistance = baseDistances[`M${quantityStr}`];
-      distance = baseDistance + qualityStr.length;
-    }
-
-    if (`P${quantityStr}` in baseDistances) {
-      const baseDistance = baseDistances[`P${quantityStr}`];
-      distance = baseDistance + qualityStr.length;
-    }
-  }
+  distance += octaveDiff * 12;
 
   return {
     label,
     distance,
-    quantity: Number(quantityStr),
+    quantity,
     quality: qualityStr,
   };
 }
@@ -78,7 +83,7 @@ const isPerfectInterval = (quantity: number) => [1, 4, 5].includes(quantity);
 export function getIntervalBetween(notes: ParsedNote[]): {
   interval: ParsedInterval;
   notes: ParsedNote[];
-  play: (reverse?: boolean) => void;
+  play: (reverse?: boolean) => Promise<void>;
 } {
   if (notes.length !== 2) {
     throw new Error(
@@ -88,55 +93,47 @@ export function getIntervalBetween(notes: ParsedNote[]): {
 
   const [note1, note2] = notes;
   const distance = Math.abs(note2.distanceFromC - note1.distanceFromC);
+
   const start = CScale.findIndex((scaleNote) => scaleNote === note1.baseNote);
   const end = CScale.findIndex((scaleNote) => scaleNote === note2.baseNote);
 
-  const quantity = Math.abs(start - end) + 1;
+  const baseQuantity = Math.abs(start - end) + 1;
+  const octaveDiff = Math.abs(note1.octave - note2.octave);
+  const quantity = baseQuantity + octaveDiff * 7;
+
   let quality = "";
 
-  if (isPerfectInterval(quantity)) {
-    const semitonesToPerfect = baseDistances[`P${quantity}`];
+  if (isPerfectInterval(baseQuantity)) {
+    const semitonesToPerfect = baseDistances[`P${baseQuantity}`];
 
-    if (distance === semitonesToPerfect) quality = "P";
-
-    if (distance < semitonesToPerfect) {
+    if (distance === semitonesToPerfect) {
+      quality = "P";
+    } else if (distance < semitonesToPerfect) {
+      const diff = semitonesToPerfect - distance;
+      quality = "d".repeat(diff);
+    } else {
       const diff = distance - semitonesToPerfect;
-      quality = Array.from({ length: diff }, () => "d").join("");
+      quality = "a".repeat(diff);
     }
+  } else {
+    const semitonesToMajor = baseDistances[`M${baseQuantity}`];
 
-    if (distance > semitonesToPerfect) {
-      const diff = distance - semitonesToPerfect;
-      quality = Array.from({ length: diff }, () => "a").join("");
-    }
-  }
-
-  if (!isPerfectInterval(quantity)) {
-    const semitonesToMajor = baseDistances[`M${quantity}`];
-
-    if (distance === semitonesToMajor) quality = "M";
-
-    if (distance < semitonesToMajor) {
-      if (semitonesToMajor - distance === 1) quality = "m";
-      if (semitonesToMajor - distance > 1) {
-        const diff = semitonesToMajor - distance;
-        quality = Array.from({ length: diff - 1 }, () => "")
-          .map(() => "d")
-          .join("");
-      }
-    }
-
-    if (distance > semitonesToMajor) {
+    if (distance === semitonesToMajor) {
+      quality = "M";
+    } else if (distance === semitonesToMajor - 1) {
+      quality = "m";
+    } else if (distance < semitonesToMajor - 1) {
+      const diff = semitonesToMajor - distance;
+      quality = "d".repeat(diff);
+    } else {
       const diff = distance - semitonesToMajor;
-      quality = Array.from({ length: diff }, () => "")
-        .map(() => "a")
-        .join("");
+      quality = "a".repeat(diff);
     }
   }
 
   const noteLabels = notes.map((note) => note.label);
-  console.log(noteLabels);
-
   const intervalLabel = `${quality}${quantity}`;
+
   return {
     interval: Interval(intervalLabel),
     notes,
