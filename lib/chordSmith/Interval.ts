@@ -1,5 +1,5 @@
-import { sampler } from "@/lib/chordSmith/index";
-import type { ParsedNote } from "@/lib/chordSmith/Note";
+import { sampler, type Note as TNote } from "@/lib/chordSmith/index";
+import { Note, type ParsedNote } from "@/lib/chordSmith/Note";
 
 export type ParsedInterval = {
   distance: number;
@@ -142,4 +142,40 @@ export function getIntervalBetween(notes: ParsedNote[]): {
         ? sampler.playInterval([...noteLabels].reverse())
         : sampler.playInterval(noteLabels),
   };
+}
+
+const NOTES = ["C", "D", "E", "F", "G", "A", "B"];
+
+export function distanceToNote(distance: number): TNote {
+  const octave = Math.floor(distance / 12);
+  const index = distance % 12;
+  const noteName = NOTES[index];
+  return `${noteName}${octave}` as TNote;
+}
+
+export function getNoteFromInterval(baseNote: TNote, intervalLabel: string) {
+  console.log(Note(baseNote), intervalLabel);
+  const intervalLabelMatch = intervalLabel.match(/^(P|M|m|a+|d+)(\d+)$/);
+
+  if (!intervalLabelMatch) {
+    throw new Error(`Invalid interval label: ${intervalLabel}`);
+  }
+
+  const noteMatch = baseNote.match(/^([A-Ga-g])([#b]*)(\d+)$/);
+
+  if (!noteMatch) {
+    throw new Error(`Invalid note format: ${baseNote}`);
+  }
+
+  const parsedBase = Note(baseNote);
+  const parsedInterval = Interval(intervalLabel);
+
+  console.log("BASENOtE: ", parsedBase.baseNote);
+  console.log("QUANTITY: ", parsedInterval.quantity);
+
+  const startIndex = NOTES.findIndex((note) => note === parsedBase.baseNote);
+  const endIndex = startIndex + parsedInterval.quantity;
+
+  const secondBase = NOTES[endIndex - 1];
+  console.log(secondBase);
 }

@@ -42,23 +42,22 @@ export function Note(input: string): ParsedNote {
 
   const baseDistanceFromC =
     distancesFromC[letter as "C" | "D" | "E" | "F" | "G" | "A" | "B"];
-  const distanceFromC = () => {
-    if (flats) {
-      return baseDistanceFromC - flats;
-    }
-    if (sharps) {
-      return baseDistanceFromC + sharps;
-    }
-    return baseDistanceFromC;
-  };
+
+  const pitchClass = baseDistanceFromC + sharps - flats;
+  // Wrap into 0–11
+  const distanceInOctave = (pitchClass + 12) % 12;
+
+  // Absolute semitone distance from C0
+  const distanceFromC = octave * 12 + distanceInOctave;
 
   return {
     label,
     baseNote: letter.toUpperCase(),
     accidentals: { sharps, flats },
-    octave: Number(octave),
+    octave,
     isNatural: !sharps && !flats,
-    distanceFromC: distanceFromC(),
+    distanceFromC, // <-- fixed: unique per note, octave-aware
+    distanceInOctave, // <-- useful for theory (0–11)
     play: () => sampler.playNote(input),
   };
 }

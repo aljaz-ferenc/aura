@@ -1,4 +1,6 @@
-import { type Duration, type Note, sampler } from "@/lib/chordSmith/index";
+import { getIntervalBetween } from "@/lib/chordSmith/Interval";
+import { type Duration, sampler, type TNote } from "@/lib/chordSmith/index";
+import type { Note } from "@/lib/chordSmith/Note";
 
 export class ChordClass {
   notes: Note[] = [];
@@ -12,4 +14,14 @@ export class ChordClass {
   async play() {
     await sampler.playChord(this.notes, this.duration);
   }
+}
+
+const chords = {
+  maj: {
+    intervals: ["M3", "m3"],
+  },
+};
+
+export function Chord(label: string, baseNote: TNote) {
+  const notes = [baseNote, getIntervalBetween(baseNote)];
 }

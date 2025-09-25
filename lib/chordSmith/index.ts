@@ -48,19 +48,71 @@ export class Sampler {
     this.sampler?.triggerAttackRelease(note, duration);
   }
 
-  async playChord(notes: Note[], duration: Duration) {
-    await Tone.start();
-    await this.waitForLoad();
-    this.sampler?.triggerAttackRelease(notes, duration);
-  }
-
-  async playInterval(notes: Note[], spread: number = 1) {
+  async playChord({
+    notes,
+    spread = 0.5,
+    duration = 2,
+    mode = "harmonic",
+  }: {
+    notes: Note[];
+    spread?: number;
+    duration?: number;
+    mode?: "harmonic" | "melodic" | "reversed";
+  }) {
     await Tone.start();
     await this.waitForLoad();
     const now = Tone.now();
-    this.sampler?.triggerAttack(notes[0], now);
-    this.sampler?.triggerAttack(notes[1], now + spread);
-    this.sampler?.triggerRelease(notes, now + 4);
+
+    switch (mode) {
+      case "melodic":
+        notes.forEach((note, index) => {
+          this.sampler?.triggerAttack(note, now + index * spread);
+        });
+        break;
+      case "reversed":
+        notes.reverse().forEach((note, index) => {
+          this.sampler?.triggerAttack(note, now + index * spread);
+        });
+        break;
+      case "harmonic":
+        notes.forEach((note) => {
+          this.sampler?.triggerAttack(note, now);
+        });
+        break;
+    }
+
+    this.sampler?.triggerRelease(notes, now + notes.length * spread + duration);
+  }
+
+  async playInterval({
+    notes,
+    spread = 0.5,
+    mode = "melodic",
+  }: {
+    notes: Note[];
+    spread?: number;
+    mode?: "harmonic" | "melodic" | "reversed";
+  }) {
+    await Tone.start();
+    await this.waitForLoad();
+    const now = Tone.now();
+
+    switch (mode) {
+      case "melodic":
+        notes.forEach((note, index) => {
+          this.sampler?.triggerAttack(note, now + index * spread);
+        });
+        break;
+      case "reversed":
+        notes.reverse().forEach((note, index) => {
+          this.sampler?.triggerAttack(note, now + index * spread);
+        });
+        break;
+      case "harmonic":
+        notes.forEach((note) => {
+          this.sampler?.triggerAttack(note, now);
+        });
+    }
   }
 }
 

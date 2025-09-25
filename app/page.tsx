@@ -1,19 +1,24 @@
 "use client";
 
-import { getIntervalBetween, Interval } from "@/lib/chordSmith/Interval";
-import { Note } from "@/lib/chordSmith/Note";
+import { Chord, Interval, Note } from "@/lib/engine/Note";
 
-const int = getIntervalBetween([Note("C4"), Note("Gb5")]);
-console.log(int);
+const note1 = new Note("C#4");
+const note2 = new Note("E#4");
+const note3 = new Note("G#4");
+const interval = new Interval(note1, note2);
+const chord = new Chord([note1, note2, note3]);
 
 export default function PianoChord() {
   return (
-    <div className="flex flex-col">
-      <button type="button" onClick={() => int.play(true)}>
+    <div className="text-red-500">
+      <button type="button" onClick={() => interval.play()}>
         Play Interval
       </button>
-      <button onClick={() => Note("C#4").play()} type="button">
-        Play C-G
+      <button onClick={() => note1.play()} type="button">
+        Play note
+      </button>
+      <button onClick={() => chord.play("reversed")} type="button">
+        Play chord
       </button>
     </div>
   );
