@@ -132,11 +132,13 @@ export default function IntervalsPage() {
           /{history.length}
         </span>
       </div>
-      <IntervalRenderer
-        interval={currentInterval.interval}
-        show={guessedCorrectly !== null}
-        className={cn(guessedCorrectly === null ? "opacity-0" : "opacity-100")}
-      />
+      <div className={cn(["p-3"])}>
+        <IntervalRenderer
+          interval={currentInterval.interval}
+          show={guessedCorrectly !== null}
+          className={cn(["bg-white rounded-md"])}
+        />
+      </div>
       <div className="grid grid-cols-4 gap-3 place-items-stretch text-center p-3">
         {INTERVAL_OPTIONS.map((option) => (
           <button

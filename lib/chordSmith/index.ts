@@ -45,6 +45,7 @@ export class Sampler {
     duration = duration || 3;
     await Tone.start();
     await this.waitForLoad();
+    this.sampler?.releaseAll();
     this.sampler?.triggerAttackRelease(note, duration);
   }
 
@@ -75,6 +76,7 @@ export class Sampler {
         });
         break;
       case "harmonic":
+        this.sampler?.releaseAll();
         notes.forEach((note) => {
           this.sampler?.triggerAttack(note, now);
         });
@@ -144,6 +146,7 @@ export class Sampler {
         });
         break;
       case "harmonic":
+        this.sampler?.releaseAll();
         notes.forEach((note) => {
           this.sampler?.triggerAttack(note, now);
         });
