@@ -79,13 +79,12 @@ export function IntervalRenderer({
       const notes = [finalNote];
 
       const voice = new Voice({ numBeats: 4, beatValue: 4 });
-      if (show) {
-        voice.addTickables(notes);
-      }
-
+      voice.addTickables(notes);
       new Formatter().joinVoices([voice]).format([voice], 350);
 
-      voice.draw(context, stave);
+      if (show) {
+        voice.draw(context, stave);
+      }
     } catch (error) {
       console.error("Error rendering music notation:", error);
     }

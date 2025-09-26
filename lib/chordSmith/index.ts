@@ -11,43 +11,22 @@ export class Sampler {
     this.initSampler();
   }
 
-  private async initSampler() {
+  private initSampler() {
     if (this.sampler) return;
 
-    try {
-      await Tone.start();
-
-      this.sampler = new Tone.Sampler({
-        urls: {
-          C4: "JHPiano_NoSus_Close_C4_vl4_rr1.flac",
-          D4: "JHPiano_NoSus_Close_D4_vl4_rr1.flac",
-          E4: "JHPiano_NoSus_Close_E4_vl2_rr1.flac",
-        },
-        release: 1,
-        baseUrl: "/samples/",
-      }).toDestination();
-
-      // Wait for samples to load
-      await new Promise<void>((resolve) => {
-        if (this.sampler) {
-          this.sampler.onload = () => {
-            console.log("Sampler loaded!");
-            this.isLoaded = true;
-            resolve();
-          };
-
-          setTimeout(() => {
-            console.log("Sampler load timeout, proceeding anyway...");
-            this.isLoaded = true;
-            resolve();
-          }, 3000);
-        }
-      });
-    } catch (error) {
-      console.error("Sampler initialization failed:", error);
-      this.sampler = null;
-      throw error;
-    }
+    this.sampler = new Tone.Sampler({
+      urls: {
+        C4: "JHPiano_NoSus_Close_C4_vl4_rr1.flac",
+        D4: "JHPiano_NoSus_Close_D4_vl4_rr1.flac",
+        E4: "JHPiano_NoSus_Close_E4_vl2_rr1.flac",
+      },
+      release: 1,
+      baseUrl: "/samples/",
+      onload: () => {
+        console.log("Sampler loaded!");
+        this.isLoaded = true;
+      },
+    }).toDestination();
   }
 
   private async waitForLoad() {
@@ -144,43 +123,30 @@ export class Sampler {
     notes,
     spread = 0.5,
     mode = "melodic",
-    noteDuration = 0.4,
   }: {
     notes: Note[];
     spread?: number;
     mode?: "harmonic" | "melodic" | "reversed";
-    noteDuration?: number;
   }) {
     await Tone.start();
     await this.waitForLoad();
+    const now = Tone.now();
 
-    const noteLabels = notes.map((note) => note.label);
-    const sequenceNotes =
-      mode === "reversed" ? [...noteLabels].reverse() : noteLabels;
-
-    if (mode === "harmonic") {
-      // Play all notes simultaneously
-      sequenceNotes.forEach((note) => {
-        this.sampler?.triggerAttackRelease(note, noteDuration, Tone.now());
-      });
-    } else {
-      // Use Sequence for precise melodic timing
-      const sequence = new Tone.Sequence(
-        (time, note) => {
-          this.sampler?.triggerAttackRelease(note, noteDuration, time);
-        },
-        sequenceNotes,
-        spread, // Use spread as the interval between notes
-      );
-
-      sequence.start();
-
-      // Stop sequence after it completes
-      const totalDuration = sequenceNotes.length * spread;
-      setTimeout(() => {
-        sequence.stop();
-        sequence.dispose();
-      }, totalDuration * 1000);
+    switch (mode) {
+      case "melodic":
+        notes.forEach((note, index) => {
+          this.sampler?.triggerAttack(note, now + index * spread);
+        });
+        break;
+      case "reversed":
+        notes.reverse().forEach((note, index) => {
+          this.sampler?.triggerAttack(note, now + index * spread);
+        });
+        break;
+      case "harmonic":
+        notes.forEach((note) => {
+          this.sampler?.triggerAttack(note, now);
+        });
     }
   }
 }
