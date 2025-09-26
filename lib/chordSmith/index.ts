@@ -84,6 +84,33 @@ export class Sampler {
     this.sampler?.triggerRelease(notes, now + notes.length * spread + duration);
   }
 
+  async playScale({
+    notes,
+    spread = 0.5,
+    mode = "melodic",
+  }: {
+    notes: Note[];
+    spread?: number;
+    mode?: "melodic" | "reversed";
+  }) {
+    await Tone.start();
+    await this.waitForLoad();
+    const now = Tone.now();
+
+    switch (mode) {
+      case "melodic":
+        notes.forEach((note, index) => {
+          this.sampler?.triggerAttack(note, now + index * spread);
+        });
+        break;
+      case "reversed":
+        notes.reverse().forEach((note, index) => {
+          this.sampler?.triggerAttack(note, now + index * spread);
+        });
+        break;
+    }
+  }
+
   async playInterval({
     notes,
     spread = 0.5,
