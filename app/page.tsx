@@ -13,7 +13,7 @@ console.log(scale.notes);
 export default function PianoChord() {
   return (
     <div className="text-red-500">
-      <button type="button" onClick={() => scale.play()}>
+      <button type="button" onClick={() => scale.play('reversed')}>
         Play scale
       </button>
     </div>

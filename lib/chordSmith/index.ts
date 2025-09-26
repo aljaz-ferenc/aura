@@ -98,16 +98,24 @@ export class Sampler {
     const now = Tone.now();
 
     switch (mode) {
-      case "melodic":
-        notes.forEach((note, index) => {
-          this.sampler?.triggerAttack(note, now + index * spread);
-        });
-        break;
+        case "melodic":
+            notes.forEach((note, index) => {
+                this.sampler?.triggerAttackRelease(
+                    note,
+                    spread,
+                    now + index * spread
+                );
+            });
+            break;
       case "reversed":
-        notes.reverse().forEach((note, index) => {
-          this.sampler?.triggerAttack(note, now + index * spread);
-        });
-        break;
+          notes.reverse().forEach((note, index) => {
+              this.sampler?.triggerAttackRelease(
+                  note,
+                  spread,
+                  now + index * spread
+              );
+          });
+          break;
     }
   }
 
