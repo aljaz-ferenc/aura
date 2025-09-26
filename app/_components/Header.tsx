@@ -9,8 +9,8 @@ const links = [
 
 export default function Header() {
   return (
-    <header className="border-b">
-      <nav className="flex gap-5 justify-center items-center text-muted-foreground h-14 text-sm">
+    <header>
+      <nav className="flex gap-5 justify-end items-center text-muted-foreground h-14 text-sm px-6">
         {links.map((link) => (
           <Link key={link.href} href={link.href}>
             {link.label}

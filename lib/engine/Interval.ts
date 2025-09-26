@@ -1,5 +1,5 @@
 import { sampler } from "@/lib/chordSmith";
-import type { Note } from "@/lib/engine/Note";
+import { Note } from "@/lib/engine/Note";
 
 export class Interval {
   note1: Note;
@@ -22,5 +22,23 @@ export class Interval {
     if (!match) throw new Error(`Invalid interval: ${interval}`);
 
     return new Interval(bassNote, bassNote.transpose(interval));
+  }
+
+  static random(intervalLabels: string[]) {
+    const randomLabel =
+      intervalLabels[Math.floor(Math.random() * intervalLabels.length)];
+
+    const match = randomLabel.match(/^([A]+|[d]+|P|M|m)(\d+)$/);
+    if (!match)
+      throw new Error(
+        `Invalid interval label when generating random interval: ${randomLabel}`,
+      );
+
+    const randomInterval = Interval.from(Note.random(), randomLabel);
+
+    return {
+      interval: randomInterval,
+      label: randomLabel,
+    };
   }
 }

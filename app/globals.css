@@ -45,13 +45,13 @@
 
 :root {
   --radius: 0.625rem;
-  --background: #F3F4F6;
+  --background: #f3f4f6;
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: #3B82F6;
+  --primary: #3b82f6;
   --primary-foreground: oklch(0.985 0 0);
   --secondary: oklch(0.7695 0.188 259.81 / 15%);
   --secondary-foreground: oklch(0.205 0 0);
@@ -119,8 +119,7 @@
   body {
     @apply bg-background text-foreground;
   }
-
-    .container{
-        @apply max-w-7xl mx-auto py-8;
-    }
+}
+.container {
+  @apply max-w-4xl mx-auto py-8;
 }

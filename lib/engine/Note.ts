@@ -33,6 +33,8 @@ export class Note {
     await sampler.playNote(this.label);
   }
 
+  private static readonly BASES = ["C", "D", "E", "F", "G", "A", "B"];
+
   private static readonly MAJOR_SCALES: { [key: string]: string[] } = {
     C: ["C", "D", "E", "F", "G", "A", "B"],
     D: ["D", "E", "F#", "G", "A", "B", "C#"],
@@ -133,5 +135,20 @@ export class Note {
     if (totalAdjustment > 0) return "#".repeat(totalAdjustment);
     if (totalAdjustment < 0) return "b".repeat(Math.abs(totalAdjustment));
     return "";
+  }
+
+  static random() {
+    const base = Note.BASES[Math.floor(Math.random() * Note.BASES.length)];
+    const includeAccidentals = Math.random() > 0.5;
+    const accidentalType = includeAccidentals
+      ? Math.random() > 0.5
+        ? "#"
+        : "b"
+      : "";
+    const octaves = [3, 4, 5];
+    const randomOctave = octaves[Math.floor(Math.random() * octaves.length)];
+
+    const noteLabel = base + accidentalType + randomOctave.toString();
+    return new Note(noteLabel);
   }
 }
