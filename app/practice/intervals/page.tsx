@@ -1,6 +1,6 @@
 "use client";
 
-import { SkipForward, Volume2 } from "lucide-react";
+import { Check, Repeat, SkipForward, Volume2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { IntervalRenderer } from "@/app/practice/intervals/_components/IntervalRenderer";
 import { Button } from "@/components/ui/button";
@@ -114,12 +114,29 @@ export default function IntervalsPage() {
         </Button>
       )}
       {guessedCorrectly !== null && (
-        <Button
-          className="rounded-full !px-14 py-8 text-lg font-bold cursor-pointer flex gap-2 mx-auto my-10"
-          onClick={onNextRound}
-        >
-          Next Interval <SkipForward />
-        </Button>
+        <div className="flex justify-center gap-3 items-center">
+          <Button
+            className="text-primary rounded-full border-none outline-none shadow-sm bg-white hover:!bg-primary cursor-pointer hover:text-white"
+            variant="outline"
+            onClick={() => currentInterval.interval.play()}
+          >
+            <Repeat />
+            Repeat Interval
+          </Button>
+          <Button
+            className="rounded-full !px-14 py-8 text-lg font-bold cursor-pointer flex gap-2 my-10 mx-0"
+            onClick={onNextRound}
+          >
+            Next Interval <SkipForward />
+          </Button>
+          <Button
+            className="text-green-500 rounded-full border-none outline-none shadow-sm bg-white hover:bg-green-500 cursor-pointer hover:text-white"
+            variant="outline"
+          >
+            <Check />
+            End Practice
+          </Button>
+        </div>
       )}
       <div className="mb-2">
         <span className="text-muted-foreground">Score: </span>
@@ -132,14 +149,14 @@ export default function IntervalsPage() {
           /{history.length}
         </span>
       </div>
-      <div className={cn(["p-3"])}>
+      <div className={cn([""])}>
         <IntervalRenderer
           interval={currentInterval.interval}
           show={guessedCorrectly !== null}
           className={cn(["bg-white rounded-md"])}
         />
       </div>
-      <div className="grid grid-cols-4 gap-3 place-items-stretch text-center p-3">
+      <div className="grid grid-cols-4 gap-3 place-items-stretch text-center mt-5">
         {INTERVAL_OPTIONS.map((option) => (
           <button
             key={option.symbol}
