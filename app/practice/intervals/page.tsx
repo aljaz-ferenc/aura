@@ -2,6 +2,7 @@
 
 import { Check, Repeat, SkipForward, Volume2 } from "lucide-react";
 import { useEffect, useState } from "react";
+import EndSessionDialog from "@/app/_components/EndSessionDialog";
 import { IntervalRenderer } from "@/app/practice/intervals/_components/IntervalRenderer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -46,6 +47,7 @@ export default function IntervalsPage() {
     interval: Interval;
     label: string;
   }>(Interval.random(selectedIntervalsLabels));
+  const [endSessionDialogIsOpen, setEndSessionDialogIsOpen] = useState(false);
   const [guessedCorrectly, setGuessedCorrectly] = useState<boolean | null>(
     null,
   );
@@ -104,40 +106,32 @@ export default function IntervalsPage() {
           Listen to the interval and select the correct type from the options.
         </p>
       </div>
-      {guessedCorrectly === null && (
+      <div className="flex flex-col justify-center gap-3 items-center">
         <Button
-          className="rounded-full !px-14 py-8 text-lg font-bold cursor-pointer flex gap-2 mx-auto my-10"
+          className="rounded-full !px-14 py-8 text-lg font-bold cursor-pointer flex gap-2 mt-10 mx-0"
+          onClick={onNextRound}
+          disabled={guessedCorrectly === null}
+        >
+          Next Interval <SkipForward />
+        </Button>
+
+        <Button
+          className="text-primary rounded-full border-none outline-none shadow-sm bg-white hover:!bg-primary cursor-pointer hover:text-white"
+          variant="outline"
           onClick={() => currentInterval.interval.play()}
         >
-          <Volume2 size={50} className="!h-20" />
-          <span>Play Again</span>
+          <Repeat />
+          Repeat Interval
         </Button>
-      )}
-      {guessedCorrectly !== null && (
-        <div className="flex justify-center gap-3 items-center">
-          <Button
-            className="text-primary rounded-full border-none outline-none shadow-sm bg-white hover:!bg-primary cursor-pointer hover:text-white"
-            variant="outline"
-            onClick={() => currentInterval.interval.play()}
-          >
-            <Repeat />
-            Repeat Interval
-          </Button>
-          <Button
-            className="rounded-full !px-14 py-8 text-lg font-bold cursor-pointer flex gap-2 my-10 mx-0"
-            onClick={onNextRound}
-          >
-            Next Interval <SkipForward />
-          </Button>
-          <Button
-            className="text-green-500 rounded-full border-none outline-none shadow-sm bg-white hover:bg-green-500 cursor-pointer hover:text-white"
-            variant="outline"
-          >
-            <Check />
-            End Practice
-          </Button>
-        </div>
-      )}
+        {/*<Button*/}
+        {/*  className="text-green-500 rounded-full border-none outline-none shadow-sm bg-white hover:bg-green-500 cursor-pointer hover:text-white"*/}
+        {/*  variant="outline"*/}
+        {/*  onClick={() => setEndSessionDialogIsOpen(true)}*/}
+        {/*>*/}
+        {/*  <Check />*/}
+        {/*  End Practice*/}
+        {/*</Button>*/}
+      </div>
       <div className="mb-2">
         <span className="text-muted-foreground">Score: </span>
         <span className="font-bold">
@@ -189,6 +183,10 @@ export default function IntervalsPage() {
           </button>
         ))}
       </div>
+      <EndSessionDialog
+        setEndSessionDialogIsOpen={setEndSessionDialogIsOpen}
+        endSessionDialogIsOpen={endSessionDialogIsOpen}
+      />
     </main>
   );
 }
