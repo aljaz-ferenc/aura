@@ -16,4 +16,11 @@ export class Interval {
       mode,
     });
   }
+
+  static from(bassNote: Note, interval: string) {
+    const match = interval.match(/^([A]+|[d]+|P|M|m)(\d+)$/);
+    if (!match) throw new Error(`Invalid interval: ${interval}`);
+
+    return new Interval(bassNote, bassNote.transpose(interval));
+  }
 }

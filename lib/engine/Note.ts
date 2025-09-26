@@ -59,12 +59,28 @@ export class Note {
     const scaleIndex = (number - 1) % 7;
     const targetNoteBase = majorScale[scaleIndex];
 
-    const octaveChange = Math.floor((number - 1) / 7);
+    // Get the base letter names (without accidentals)
+    const startLetter = this.base;
+    const targetLetter = targetNoteBase.replace(/[#b]/, "");
+
+    // Find their positions in the note alphabet
+    const noteLetters = ["C", "D", "E", "F", "G", "A", "B"];
+    const startIndex = noteLetters.indexOf(startLetter);
+    const targetIndex = noteLetters.indexOf(targetLetter);
+
+    // Calculate octave change
+    let octaveChange = Math.floor((number - 1) / 7);
+
+    // Additional octave change if the target letter comes before the start letter
+    // (e.g., A → F, B → G, etc.)
+    if (targetIndex < startIndex) {
+      octaveChange += 1;
+    }
+
     const newOctave = this.octave + octaveChange;
 
     const naturalSemitones =
       Note.MAJOR_SCALE_SEMITONES[scaleIndex] + octaveChange * 12;
-
     const qualityAdjustment = this.getQualityAdjustment(quality, number);
     const requiredSemitones = naturalSemitones + qualityAdjustment;
 
@@ -73,9 +89,7 @@ export class Note {
       requiredSemitones - naturalSemitones,
     );
 
-    return new Note(
-      `${targetNoteBase.replace(/[#b]/, "")}${accidentals}${newOctave}`,
-    );
+    return new Note(`${targetLetter}${accidentals}${newOctave}`);
   }
 
   private getQualityAdjustment(quality: string, number: number): number {
@@ -108,8 +122,10 @@ export class Note {
       ];
 
     // Count existing accidentals in the scale note
-    const existingSharps = (targetNoteBase.match(/#/g) || []).length;
-    const existingFlats = (targetNoteBase.match(/b/g) || []).length;
+    const existingSharps =
+      (targetNoteBase.match(/#/g) || []).length + this.accidentals.sharps;
+    const existingFlats =
+      (targetNoteBase.match(/b/g) || []).length + this.accidentals.flats;
     const existingAdjustment = existingSharps - existingFlats;
 
     const totalAdjustment = existingAdjustment + semitoneAdjustment;
