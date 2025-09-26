@@ -1,7 +1,8 @@
 "use client";
 
-import { Blocks, Ear, Mic, SkipForward, Volume2 } from "lucide-react";
+import { SkipForward, Volume2 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { IntervalRenderer } from "@/app/practice/intervals/_components/IntervalRenderer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Interval } from "@/lib/engine/Interval";
@@ -24,27 +25,21 @@ const INTERVAL_OPTIONS = [
   { symbol: "P8", fullName: "Perfect Octave", category: "perfect" },
 
   // Compound Intervals (9th to 15th)
-  { symbol: "m9", fullName: "Minor Ninth", category: "minor" },
-  { symbol: "M9", fullName: "Major Ninth", category: "major" },
-  { symbol: "m10", fullName: "Minor Tenth", category: "minor" },
-  { symbol: "M10", fullName: "Major Tenth", category: "major" },
-  { symbol: "P11", fullName: "Perfect Eleventh", category: "perfect" },
-  { symbol: "A11", fullName: "Augmented Eleventh", category: "augmented" },
-  { symbol: "P12", fullName: "Perfect Twelfth", category: "perfect" },
-  { symbol: "m13", fullName: "Minor Thirteenth", category: "minor" },
-  { symbol: "M13", fullName: "Major Thirteenth", category: "major" },
-  { symbol: "m14", fullName: "Minor Fourteenth", category: "minor" },
-  { symbol: "M14", fullName: "Major Fourteenth", category: "major" },
-  { symbol: "P15", fullName: "Perfect Fifteenth", category: "perfect" },
+  // { symbol: "m9", fullName: "Minor Ninth", category: "minor" },
+  // { symbol: "M9", fullName: "Major Ninth", category: "major" },
+  // { symbol: "m10", fullName: "Minor Tenth", category: "minor" },
+  // { symbol: "M10", fullName: "Major Tenth", category: "major" },
+  // { symbol: "P11", fullName: "Perfect Eleventh", category: "perfect" },
+  // { symbol: "A11", fullName: "Augmented Eleventh", category: "augmented" },
+  // { symbol: "P12", fullName: "Perfect Twelfth", category: "perfect" },
+  // { symbol: "m13", fullName: "Minor Thirteenth", category: "minor" },
+  // { symbol: "M13", fullName: "Major Thirteenth", category: "major" },
+  // { symbol: "m14", fullName: "Minor Fourteenth", category: "minor" },
+  // { symbol: "M14", fullName: "Major Fourteenth", category: "major" },
+  // { symbol: "P15", fullName: "Perfect Fifteenth", category: "perfect" },
 ] as const;
 
 const selectedIntervalsLabels = INTERVAL_OPTIONS.map((option) => option.symbol);
-
-// const INTERVAL_MODES = [
-//   { label: "Identify", value: "identify", icon: <Ear /> },
-//   { label: "Construct", value: "construct", icon: <Blocks /> },
-//   { label: "Sing", value: "sing", icon: <Mic /> },
-// ];
 
 export default function IntervalsPage() {
   const [currentInterval, setCurrentInterval] = useState<{
@@ -123,7 +118,7 @@ export default function IntervalsPage() {
           className="rounded-full !px-14 py-8 text-lg font-bold cursor-pointer flex gap-2 mx-auto my-10"
           onClick={onNextRound}
         >
-          Continue <SkipForward />
+          Next Interval <SkipForward />
         </Button>
       )}
       <div className="mb-2">
@@ -137,11 +132,11 @@ export default function IntervalsPage() {
           /{history.length}
         </span>
       </div>
-      <div className="w-full h-50 border rounded-md bg-white text-muted-foreground text-xs grid place-items-center mb-10">
-        NOTATION COMES HERE
-        {guessedCorrectly === true && <p>CORRECT! 😄</p>}
-        {guessedCorrectly === false && <p>INCORRECT! 😪</p>}
-      </div>
+      <IntervalRenderer
+        interval={currentInterval.interval}
+        show={guessedCorrectly !== null}
+        className={cn(guessedCorrectly === null ? "opacity-0" : "opacity-100")}
+      />
       <div className="grid grid-cols-4 gap-3 place-items-stretch text-center p-3">
         {INTERVAL_OPTIONS.map((option) => (
           <button

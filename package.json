@@ -19,7 +19,8 @@
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "tailwind-merge": "^3.3.1",
-    "tone": "^15.3.3"
+    "tone": "^15.3.3",
+    "vexflow": "^5.0.0"
   },
   "devDependencies": {
     "@biomejs/biome": "2.2.0",
