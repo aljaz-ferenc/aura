@@ -6,6 +6,7 @@ import { useShallow } from "zustand/react/shallow";
 import InterfaceAnswerOptions from "@/app/_components/InterfaceAnswerOptions";
 import InterfaceNavigation from "@/app/_components/InterfaceNavigation";
 import InterfaceScore from "@/app/_components/InterfaceScore";
+import LoadingPage from "@/app/_components/LoadingPage";
 import InterfaceLayout from "@/app/_components/layouts/InterfaceLayout";
 import { NotationRenderer } from "@/app/_components/NotationRenderer";
 import type { ExerciseCategory, ExerciseType } from "@/app/types";
@@ -28,7 +29,7 @@ export default function ListeningInterface() {
   }, [category, exercise, initStore, resetStore]);
 
   if (status === "loading") {
-    return <div>AAAAAAAAAAAAAAAAAAAALoading...</div>;
+    return <LoadingPage />;
   }
 
   return (

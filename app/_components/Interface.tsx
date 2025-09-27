@@ -13,7 +13,6 @@ import { cn } from "@/lib/utils/cn";
 
 export default function ListeningExercisePage({
   category,
-  exercise,
 }: {
   category: ExerciseCategory;
   exercise: ExerciseType;
@@ -30,9 +29,7 @@ export default function ListeningExercisePage({
     onGuess,
   } = useExerciseStore(useShallow((state) => state));
 
-  if (!currentElement) {
-    return <div>!!!!!Loading...</div>;
-  }
+  if (!currentElement) return;
 
   return (
     <main className="container mx-auto">

@@ -1,17 +1,17 @@
-import { redirect } from "next/navigation";
-import { z } from "zod";
 import { exerciseCategorySchema, exerciseTypeSchema } from "@/app/types";
 
-export function validateSearchParams(searchParams: (string | undefined)[]) {
+export function validateSearchParams(
+  searchParams: (string | undefined)[],
+): boolean {
   const category = searchParams[0];
   const exercise = searchParams[1];
 
-  if (searchParams.some((s) => !s) || !searchParams) return;
-
-  const exerciseValidation = z.safeParse(exerciseCategorySchema, category);
-  const categoryValidation = z.safeParse(exerciseTypeSchema, exercise);
-
-  if (!exerciseValidation.success || !categoryValidation.success) {
-    redirect("/free-practice");
+  if (!category || !exercise) {
+    return false;
   }
+
+  const categoryValidation = exerciseCategorySchema.safeParse(category);
+  const exerciseValidation = exerciseTypeSchema.safeParse(exercise);
+
+  return categoryValidation.success && exerciseValidation.success;
 }

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import type { CATEGORIES } from "@/lib/constants/categories";
 import type { Chord } from "@/lib/engine/Chord";
 import type { Interval } from "@/lib/engine/Interval";
 import type { Scale } from "@/lib/engine/Scale";
@@ -31,3 +32,5 @@ export type AnswerOption = {
 };
 
 export type SessionStatus = "loading" | "ready" | "playing" | "error";
+
+export type Category = (typeof CATEGORIES)[0];

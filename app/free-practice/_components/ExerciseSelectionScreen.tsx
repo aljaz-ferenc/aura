@@ -1,14 +1,16 @@
 "use client";
 
-import Link from "next/link";
 import { useState } from "react";
-import { buttonVariants } from "@/components/ui/button";
+import ExerciseSelection from "@/app/free-practice/_components/ExerciseSelection";
+import type { Category } from "@/app/types";
 import { Card, CardContent } from "@/components/ui/card";
 import { CATEGORIES } from "@/lib/constants/categories";
 import { cn } from "@/lib/utils/cn";
 
-export default function ExerciseSelection() {
-  const [selectedCategory, setSelectedCategory] = useState(CATEGORIES[0]);
+export default function ExerciseSelectionScreen() {
+  const [selectedCategory, setSelectedCategory] = useState<Category>(
+    CATEGORIES[0],
+  );
 
   return (
     <main className="container">
@@ -44,39 +46,7 @@ export default function ExerciseSelection() {
           </button>
         ))}
       </div>
-      <Card className="border-none">
-        <CardContent>
-          <h3 className="text-xl font-bold">{selectedCategory.title}</h3>
-          <p className="text-muted-foreground text-sm">
-            Practice{" "}
-            {selectedCategory.exercises
-              .slice(0, -1)
-              .map((e) => e.label.toLowerCase())
-              .join(", ") +
-              " and " +
-              selectedCategory.exercises.at(-1)?.label.toLowerCase() +
-              " " +
-              selectedCategory.title.toLowerCase() +
-              "."}
-          </p>
-          <hr className="my-5" />
-          <p className="text-muted-foreground text-sm mb-2">Exercises:</p>
-          <div className="flex gap-3">
-            {selectedCategory.exercises.map((exercise) => (
-              <Link
-                key={selectedCategory.slug + exercise.slug}
-                href={`/free-practice?category=${selectedCategory.slug}&exercise=${exercise.slug}`}
-                className={cn([
-                  buttonVariants({ variant: "outline" }),
-                  "max-w-50 w-full",
-                ])}
-              >
-                {exercise.label}
-              </Link>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+      <ExerciseSelection category={selectedCategory} />
     </main>
   );
 }

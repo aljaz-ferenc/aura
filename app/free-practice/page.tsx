@@ -1,5 +1,5 @@
 import ListeningInterface from "@/app/_components/ListeningInterface";
-import ExerciseSelection from "@/app/free-practice/_components/ExerciseSelectionPage";
+import ExerciseSelectionScreen from "@/app/free-practice/_components/ExerciseSelectionScreen";
 import { validateSearchParams } from "@/lib/utils/validateSearchParams";
 
 export default async function FreePracticePage(props: {
@@ -9,10 +9,14 @@ export default async function FreePracticePage(props: {
   const exercise = searchParams?.exercise;
   const category = searchParams?.category;
 
-  validateSearchParams([category, exercise]);
+  const isValid = validateSearchParams([category, exercise]);
 
-  if (!category || !exercise) {
-    return <ExerciseSelection />;
+  if (!isValid) {
+    return (
+      <main className="container mx-auto">
+        <ExerciseSelectionScreen />
+      </main>
+    );
   }
 
   return (
