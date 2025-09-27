@@ -16,7 +16,7 @@ import {
 import { Chord } from "@/lib/engine/Chord";
 import { Interval } from "@/lib/engine/Interval";
 import { Scale } from "@/lib/engine/Scale";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/cn";
 
 function getElementClass(category: string) {
   switch (category) {

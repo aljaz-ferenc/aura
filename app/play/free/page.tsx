@@ -5,7 +5,7 @@ import { useState } from "react";
 import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { CATEGORIES } from "@/lib/constants/categories";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/cn";
 
 export default function SelectCategoryPage() {
   const [selectedCategory, setSelectedCategory] = useState(CATEGORIES[0]);

@@ -2,9 +2,9 @@
 import { useEffect, useRef } from "react";
 import { Formatter, Renderer, Stave, Voice } from "vexflow";
 import type { MusicElement } from "@/app/types";
-import { getHarmonicNotes } from "@/lib/getHarmonicNotes";
-import { getMelodicNotes } from "@/lib/getMelodicNotes";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/cn";
+import { getHarmonicNotes } from "@/lib/utils/getHarmonicNotes";
+import { getMelodicNotes } from "@/lib/utils/getMelodicNotes";
 
 type IntervalRendererProps = {
   element: MusicElement;

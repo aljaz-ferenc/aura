@@ -2,7 +2,7 @@ import { Flame, GraduationCap } from "lucide-react";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/cn";
 
 export default function HomePage() {
   return (

@@ -1,4 +1,4 @@
-import Interface from '@/app/play/_components/Interface'
+import Interface from "@/app/play/_components/Interface";
 
 export default async function ExercisePage({
   params,
@@ -8,8 +8,7 @@ export default async function ExercisePage({
   const { exercise, category } = await params;
   return (
     <div>
-      {category} {exercise}
-      <Interface/>
+      <Interface />
     </div>
   );
 }
