@@ -28,7 +28,7 @@ export function IntervalRenderer({
     // Convert Note objects to VexFlow StaveNote
     if (!interval) return;
     const keys: string[] = [];
-    const baseNotes = [interval.note1, interval.note2];
+    const baseNotes = [interval.notes[0], interval.notes[1]];
     baseNotes.forEach((note) => {
       keys.push(`${note.base.toLowerCase()}/${note.octave}`);
     });

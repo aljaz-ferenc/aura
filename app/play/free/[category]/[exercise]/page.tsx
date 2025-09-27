@@ -1,3 +1,5 @@
+import Interface from '@/app/play/_components/Interface'
+
 export default async function ExercisePage({
   params,
 }: {
@@ -7,7 +9,7 @@ export default async function ExercisePage({
   return (
     <div>
       {category} {exercise}
-      <div>INTERFACE</div>
+      <Interface/>
     </div>
   );
 }

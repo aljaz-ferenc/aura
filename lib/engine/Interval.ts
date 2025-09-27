@@ -2,26 +2,24 @@ import { sampler } from "@/lib/chordSmith";
 import { Note } from "@/lib/engine/Note";
 
 export class Interval {
-  note1: Note;
-  note2: Note;
+  notes: Note[];
 
-  constructor(note1: Note, note2: Note) {
-    this.note1 = note1;
-    this.note2 = note2;
+  constructor(notes: Note[]) {
+    this.notes = notes;
   }
 
   async play(mode: "harmonic" | "melodic" | "reversed" = "harmonic") {
     await sampler.playInterval({
-      notes: [this.note1.label, this.note2.label],
+      notes: this.notes.map((n) => n.label),
       mode,
     });
   }
 
-  static from(bassNote: Note, interval: string) {
-    const match = interval.match(/^([A]+|[d]+|P|M|m)(\d+)$/);
-    if (!match) throw new Error(`Invalid interval: ${interval}`);
+  static from(bassNote: Note, intervalLabel: string) {
+    const match = intervalLabel.match(/^([A]+|[d]+|P|M|m)(\d+)$/);
+    if (!match) throw new Error(`Invalid interval: ${intervalLabel}`);
 
-    return new Interval(bassNote, bassNote.transpose(interval));
+    return new Interval([bassNote, bassNote.transpose(intervalLabel)]);
   }
 
   static random(intervalLabels: string[]) {
@@ -37,7 +35,7 @@ export class Interval {
     const randomInterval = Interval.from(Note.random(), randomLabel);
 
     return {
-      interval: randomInterval,
+      element: randomInterval,
       label: randomLabel,
     };
   }

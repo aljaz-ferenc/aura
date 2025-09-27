@@ -1,5 +1,6 @@
 import { sampler } from "@/lib/chordSmith";
-import type { Note } from "@/lib/engine/Note";
+import { CHORD_OPTIONS } from "@/lib/constants/asnwersOptions";
+import { Note } from "@/lib/engine/Note";
 
 const CHORD_SCHEMAS = {
   // Triads
@@ -66,17 +67,32 @@ export class Chord {
   }
 
   static from(rootNote: Note, chordType: ChordType): Chord {
-    const schema = CHORD_SCHEMAS[chordType];
+    const schema = CHORD_OPTIONS.find(
+      (chord) => chord.symbol === chordType,
+    )?.schema;
 
+    if (!schema) {
+      throw new Error(`Chord schema for ${chordType} does not exist.`);
+    }
     const notes = [rootNote];
     let currentNote = rootNote;
 
     for (const interval of schema) {
-      // Transpose from the current note, respecting octave boundaries
       currentNote = currentNote.transpose(interval);
       notes.push(currentNote);
     }
 
     return new Chord(notes);
+  }
+
+  static random(chordTypes: string[]) {
+    const randomType =
+      chordTypes[Math.floor(Math.random() * chordTypes.length)];
+    const randomChord = Chord.from(Note.random(), randomType as ChordType);
+
+    return {
+      element: randomChord,
+      label: randomType,
+    };
   }
 }

@@ -1,67 +1,95 @@
 "use client";
 
-import { Check, Repeat, SkipForward, Volume2 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { Repeat, SkipForward } from "lucide-react";
+import { useParams } from "next/navigation";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import EndSessionDialog from "@/app/_components/EndSessionDialog";
 import { IntervalRenderer } from "@/app/play/_components/IntervalRenderer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import {
+  CHORD_OPTIONS,
+  INTERVAL_OPTIONS,
+  SCALE_OPTIONS,
+} from "@/lib/constants/asnwersOptions";
+import { Chord } from "@/lib/engine/Chord";
 import { Interval } from "@/lib/engine/Interval";
 import { cn } from "@/lib/utils";
 
-const INTERVAL_OPTIONS = [
-  // Simple Intervals (Up to Octave)
-  { symbol: "P1", fullName: "Perfect Unison", category: "perfect" },
-  { symbol: "m2", fullName: "Minor Second", category: "minor" },
-  { symbol: "M2", fullName: "Major Second", category: "major" },
-  { symbol: "m3", fullName: "Minor Third", category: "minor" },
-  { symbol: "M3", fullName: "Major Third", category: "major" },
-  { symbol: "P4", fullName: "Perfect Fourth", category: "perfect" },
-  { symbol: "A4", fullName: "Augmented Fourth", category: "augmented" },
-  { symbol: "P5", fullName: "Perfect Fifth", category: "perfect" },
-  { symbol: "m6", fullName: "Minor Sixth", category: "minor" },
-  { symbol: "M6", fullName: "Major Sixth", category: "major" },
-  { symbol: "m7", fullName: "Minor Seventh", category: "minor" },
-  { symbol: "M7", fullName: "Major Seventh", category: "major" },
-  { symbol: "P8", fullName: "Perfect Octave", category: "perfect" },
-
-  // Compound Intervals (9th to 15th)
-  // { symbol: "m9", fullName: "Minor Ninth", category: "minor" },
-  // { symbol: "M9", fullName: "Major Ninth", category: "major" },
-  // { symbol: "m10", fullName: "Minor Tenth", category: "minor" },
-  // { symbol: "M10", fullName: "Major Tenth", category: "major" },
-  // { symbol: "P11", fullName: "Perfect Eleventh", category: "perfect" },
-  // { symbol: "A11", fullName: "Augmented Eleventh", category: "augmented" },
-  // { symbol: "P12", fullName: "Perfect Twelfth", category: "perfect" },
-  // { symbol: "m13", fullName: "Minor Thirteenth", category: "minor" },
-  // { symbol: "M13", fullName: "Major Thirteenth", category: "major" },
-  // { symbol: "m14", fullName: "Minor Fourteenth", category: "minor" },
-  // { symbol: "M14", fullName: "Major Fourteenth", category: "major" },
-  // { symbol: "P15", fullName: "Perfect Fifteenth", category: "perfect" },
-] as const;
+type MusicElement = Interval | Chord;
 
 const selectedIntervalsLabels = INTERVAL_OPTIONS.map((option) => option.symbol);
 
-export default function IntervalsPage() {
-  const [currentInterval, setCurrentInterval] = useState<{
-    interval: Interval;
+function getElementClass(category: string) {
+  switch (category) {
+    case "intervals":
+      return Interval;
+    case "chords":
+      return Chord;
+    default:
+      return Interval;
+  }
+}
+
+function getElementOptions(category: string) {
+  switch (category) {
+    case "intervals":
+      return INTERVAL_OPTIONS;
+    case "chords":
+      return CHORD_OPTIONS;
+    case "scales":
+      return SCALE_OPTIONS;
+    default:
+      return INTERVAL_OPTIONS;
+  }
+}
+
+export default function ListeningExercisePage() {
+  const { category, exercise } = useParams();
+
+  const [currentElement, setCurrentElement] = useState<{
+    element: MusicElement;
     label: string;
-  }>(Interval.random(selectedIntervalsLabels));
+  } | null>(null);
+
   const [endSessionDialogIsOpen, setEndSessionDialogIsOpen] = useState(false);
   const [guessedCorrectly, setGuessedCorrectly] = useState<boolean | null>(
     null,
   );
   const [history, setHistory] = useState<
-    { intervalLabel: string; wasGuessCorrect: boolean; guessedLabel: string }[]
+    { elementLabel: string; wasGuessCorrect: boolean; guessedLabel: string }[]
   >([]);
+  console.log(currentElement);
+
+  const ElementClass = useMemo(
+    () => getElementClass(category as string),
+    [category],
+  );
+  const answerOptions = useMemo(
+    () => getElementOptions(category as string),
+    [category],
+  );
+  const selectedLabels = useMemo(
+    () => answerOptions.map((option) => option.symbol),
+    [answerOptions],
+  );
+
+  const initElement = useCallback(() => {
+    console.log(ElementClass);
+    console.log(selectedLabels);
+    if (ElementClass && selectedLabels.length > 0) {
+      setCurrentElement(ElementClass.random(selectedLabels));
+    }
+  }, [selectedLabels, ElementClass]);
 
   function onGuess(guessedLabel: string) {
-    const wasGuessCorrect = guessedLabel === currentInterval.label;
+    if (!currentElement) return;
+    const wasGuessCorrect = guessedLabel === currentElement.label;
     setGuessedCorrectly(wasGuessCorrect);
     setHistory((prev) => [
       ...prev,
       {
-        intervalLabel: currentInterval.label,
+        elementLabel: currentElement.label,
         wasGuessCorrect: wasGuessCorrect,
         guessedLabel,
       },
@@ -69,20 +97,37 @@ export default function IntervalsPage() {
   }
 
   useEffect(() => {
-    currentInterval.interval.play();
-  }, [currentInterval]);
+    if (currentElement) return;
+    initElement();
+  }, [currentElement, initElement]);
+
+  useEffect(() => {
+    if (currentElement?.element) {
+      currentElement.element.play();
+    }
+  }, [currentElement]);
 
   function onNextRound() {
-    setCurrentInterval(Interval.random(selectedIntervalsLabels));
+    initElement();
     setGuessedCorrectly(null);
+  }
+
+  function onRepeat() {
+    if (currentElement?.element) {
+      currentElement.element.play();
+    }
+  }
+
+  if (!currentElement) {
+    return <div>Loading...</div>;
   }
 
   return (
     <main className="container mx-auto">
       <div className="text-center">
-        <h3 className="text-4xl font-bold">Identify the Interval</h3>
+        <h3 className="text-4xl font-bold">Identify the {category}</h3>
         <p className="text-muted-foreground mt-3">
-          Listen to the interval and select the correct type from the options.
+          Listen to the {category} and select the correct type from the options.
         </p>
       </div>
       <div className="flex flex-col justify-center gap-3 items-center">
@@ -97,7 +142,7 @@ export default function IntervalsPage() {
         <Button
           className="text-primary rounded-full border-none outline-none shadow-sm bg-white hover:!bg-primary cursor-pointer hover:text-white"
           variant="outline"
-          onClick={() => currentInterval.interval.play()}
+          onClick={onRepeat}
         >
           <Repeat />
           Repeat Interval
@@ -116,13 +161,13 @@ export default function IntervalsPage() {
       </div>
       <div className={cn([""])}>
         <IntervalRenderer
-          interval={currentInterval.interval}
+          interval={currentElement.element}
           show={guessedCorrectly !== null}
           className={cn(["bg-white rounded-md"])}
         />
       </div>
       <div className="grid grid-cols-4 gap-3 place-items-stretch text-center mt-5">
-        {INTERVAL_OPTIONS.map((option) => (
+        {answerOptions.map((option) => (
           <button
             key={option.symbol}
             type="button"
@@ -134,7 +179,7 @@ export default function IntervalsPage() {
               className={cn([
                 "transition-colors border-none",
                 guessedCorrectly === null && "group-hover:bg-secondary ",
-                option.symbol === history.at(-1)?.intervalLabel &&
+                option.symbol === history.at(-1)?.elementLabel &&
                   guessedCorrectly !== null &&
                   "bg-green-300",
 
@@ -146,9 +191,11 @@ export default function IntervalsPage() {
             >
               <CardContent className="font-semibold border-none flex flex-col">
                 <span>{option.symbol}</span>
-                <span className="text-xs text-muted-foreground font-normal lowercase">
-                  {option.fullName}
-                </span>
+                {category !== "scales" && (
+                  <span className="text-xs text-muted-foreground font-normal lowercase">
+                    {option.fullName}
+                  </span>
+                )}
               </CardContent>
             </Card>
           </button>
