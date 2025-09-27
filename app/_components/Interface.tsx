@@ -31,7 +31,7 @@ export default function ListeningExercisePage({
   } = useExerciseStore(useShallow((state) => state));
 
   if (!currentElement) {
-    return <div>Loading...</div>;
+    return <div>!!!!!Loading...</div>;
   }
 
   return (

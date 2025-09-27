@@ -8,6 +8,7 @@ import InterfaceNavigation from "@/app/_components/InterfaceNavigation";
 import InterfaceScore from "@/app/_components/InterfaceScore";
 import InterfaceLayout from "@/app/_components/layouts/InterfaceLayout";
 import { NotationRenderer } from "@/app/_components/NotationRenderer";
+import type { ExerciseCategory, ExerciseType } from "@/app/types";
 import { Scale } from "@/lib/engine/Scale";
 import { useExerciseStore } from "@/lib/store/useExerciseStore";
 import { cn } from "@/lib/utils/cn";
@@ -21,13 +22,13 @@ export default function ListeningInterface() {
 
   useEffect(() => {
     if (!category || !exercise) return;
-    initStore(category, exercise);
+    initStore(category as ExerciseCategory, exercise as ExerciseType);
 
     return () => resetStore();
   }, [category, exercise, initStore, resetStore]);
 
   if (status === "loading") {
-    return <div>Loading...</div>;
+    return <div>AAAAAAAAAAAAAAAAAAAALoading...</div>;
   }
 
   return (

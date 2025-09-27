@@ -29,3 +29,5 @@ export type AnswerOption = {
   type?: string;
   schema?: string[];
 };
+
+export type SessionStatus = "loading" | "ready" | "playing" | "error";

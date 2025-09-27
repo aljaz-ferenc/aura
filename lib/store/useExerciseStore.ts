@@ -4,6 +4,7 @@ import type {
   ExerciseCategory,
   ExerciseType,
   MusicElement,
+  SessionStatus,
 } from "@/app/types";
 import {
   CHORD_OPTIONS,
@@ -30,8 +31,8 @@ interface ExerciseState {
 
   answerOptions: AnswerOption[];
   selectedLabels: string[];
-  ElementClass: MusicElement;
-  status: "loading" | "ready" | "playing" | "error";
+  ElementClass: any;
+  status: SessionStatus;
 
   initStore: (category: ExerciseCategory, exercise: ExerciseType) => void;
   initElement: () => void;
@@ -52,7 +53,7 @@ function getElementClass(category: ExerciseCategory) {
     case "scales":
       return Scale;
     default:
-      return Interval;
+      throw new Error(`Could not get ElementClass, got category: ${category}`);
   }
 }
 
@@ -69,7 +70,7 @@ function getElementOptions(category: ExerciseCategory) {
   }
 }
 
-const initialState: Partial<ExerciseState> = {
+export const useExerciseStore = create<ExerciseState>((set, get) => ({
   category: null,
   exercise: null,
   currentElement: null,
@@ -78,12 +79,8 @@ const initialState: Partial<ExerciseState> = {
   endSessionDialogIsOpen: false,
   answerOptions: [],
   selectedLabels: [],
-  ElementClass: null,
+  ElementClass: undefined,
   status: "loading",
-};
-
-export const useExerciseStore = create<ExerciseState>((set, get) => ({
-  ...initialState,
   initStore: (category, exercise) => {
     const answerOptions = getElementOptions(category);
     const ElementClass = getElementClass(category);
@@ -165,5 +162,17 @@ export const useExerciseStore = create<ExerciseState>((set, get) => ({
     set({ status: "playing" });
     get().onRepeat();
   },
-  resetStore: () => set({ ...initialState }),
+  resetStore: () =>
+    set({
+      category: null,
+      exercise: null,
+      currentElement: null,
+      guessedCorrectly: null,
+      history: [],
+      endSessionDialogIsOpen: false,
+      answerOptions: [],
+      selectedLabels: [],
+      ElementClass: undefined,
+      status: "loading",
+    }),
 }));
