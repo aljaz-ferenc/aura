@@ -3,7 +3,7 @@
 import { Check, Repeat, SkipForward, Volume2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import EndSessionDialog from "@/app/_components/EndSessionDialog";
-import { IntervalRenderer } from "@/app/play/_components/IntervalRenderer";
+import { IntervalRenderer } from "@/app/play/_components/NotationRenderer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Interval } from "@/lib/engine/Interval";

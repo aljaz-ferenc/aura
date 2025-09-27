@@ -4,7 +4,8 @@ import { Repeat, SkipForward } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import EndSessionDialog from "@/app/_components/EndSessionDialog";
-import { IntervalRenderer } from "@/app/play/_components/IntervalRenderer";
+import { NotationRenderer } from "@/app/play/_components/NotationRenderer";
+import type { MusicElement } from "@/app/types";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -15,10 +16,6 @@ import {
 import { Chord } from "@/lib/engine/Chord";
 import { Interval } from "@/lib/engine/Interval";
 import { cn } from "@/lib/utils";
-
-type MusicElement = Interval | Chord;
-
-const selectedIntervalsLabels = INTERVAL_OPTIONS.map((option) => option.symbol);
 
 function getElementClass(category: string) {
   switch (category) {
@@ -45,7 +42,7 @@ function getElementOptions(category: string) {
 }
 
 export default function ListeningExercisePage() {
-  const { category, exercise } = useParams();
+  const { category } = useParams();
 
   const [currentElement, setCurrentElement] = useState<{
     element: MusicElement;
@@ -59,7 +56,6 @@ export default function ListeningExercisePage() {
   const [history, setHistory] = useState<
     { elementLabel: string; wasGuessCorrect: boolean; guessedLabel: string }[]
   >([]);
-  console.log(currentElement);
 
   const ElementClass = useMemo(
     () => getElementClass(category as string),
@@ -75,8 +71,6 @@ export default function ListeningExercisePage() {
   );
 
   const initElement = useCallback(() => {
-    console.log(ElementClass);
-    console.log(selectedLabels);
     if (ElementClass && selectedLabels.length > 0) {
       setCurrentElement(ElementClass.random(selectedLabels));
     }
@@ -160,8 +154,8 @@ export default function ListeningExercisePage() {
         </span>
       </div>
       <div className={cn([""])}>
-        <IntervalRenderer
-          interval={currentElement.element}
+        <NotationRenderer
+          element={currentElement.element}
           show={guessedCorrectly !== null}
           className={cn(["bg-white rounded-md"])}
         />

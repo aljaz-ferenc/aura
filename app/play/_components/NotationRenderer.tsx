@@ -8,17 +8,17 @@ import {
   StaveNote,
   Voice,
 } from "vexflow";
-import type { Interval } from "@/lib/engine/Interval";
+import type { MusicElement } from "@/app/types";
 import { cn } from "@/lib/utils";
 
 type IntervalRendererProps = {
-  interval: Interval;
+  element: MusicElement;
   className?: string;
   show?: boolean;
 };
 
-export function IntervalRenderer({
-  interval,
+export function NotationRenderer({
+  element,
   className,
   show = true,
 }: IntervalRendererProps) {
@@ -26,9 +26,9 @@ export function IntervalRenderer({
 
   useEffect(() => {
     // Convert Note objects to VexFlow StaveNote
-    if (!interval) return;
+    if (!element) return;
     const keys: string[] = [];
-    const baseNotes = [interval.notes[0], interval.notes[1]];
+    const baseNotes = element.notes;
     baseNotes.forEach((note) => {
       keys.push(`${note.base.toLowerCase()}/${note.octave}`);
     });
@@ -94,7 +94,7 @@ export function IntervalRenderer({
         containerRef.current.innerHTML = "";
       }
     };
-  }, [interval, show]);
+  }, [element, show]);
 
   return <div ref={containerRef} className={cn(["mx-auto", className])} />;
 }
