@@ -1,5 +1,5 @@
 import { sampler } from "@/lib/chordSmith";
-import type { Note } from "@/lib/engine/Note";
+import { Note } from "@/lib/engine/Note";
 
 const SCALE_SCHEMAS = {
   // Major and Minor Scales
@@ -66,27 +66,10 @@ const SCALE_SCHEMAS = {
 type ScaleType = keyof typeof SCALE_SCHEMAS;
 
 export class Scale {
-  root: Note;
-  type: ScaleType;
   notes: Note[];
 
-  constructor(root: Note, type: ScaleType) {
-    this.root = root;
-    this.type = type;
-    this.notes = this.generateScale();
-  }
-
-  private generateScale(): Note[] {
-    const intervals = SCALE_SCHEMAS[this.type];
-    const notes = [this.root];
-    let currentNote = this.root;
-
-    for (const interval of intervals) {
-      currentNote = currentNote.transpose(interval);
-      notes.push(currentNote);
-    }
-
-    return notes;
+  constructor(notes: Note[]) {
+    this.notes = notes;
   }
 
   async play(mode: "melodic" | "reversed" = "melodic") {
@@ -94,5 +77,30 @@ export class Scale {
       notes: this.notes.map((note) => note.label),
       mode,
     });
+  }
+
+  static from(rootNote: Note, scaleLabel: ScaleType) {
+    //TODO: check if label exists
+    const intervals = SCALE_SCHEMAS[scaleLabel];
+
+    const notes = [rootNote];
+    let currentNote = rootNote;
+
+    for (const interval of intervals) {
+      currentNote = currentNote.transpose(interval);
+      notes.push(currentNote);
+    }
+    return new Scale(notes);
+  }
+
+  static random(scaleLabels: ScaleType[]) {
+    const randomType =
+      scaleLabels[Math.floor(Math.random() * scaleLabels.length)];
+    const randomScale = Scale.from(Note.random(), randomType as ScaleType);
+
+    return {
+      element: randomScale,
+      label: randomType,
+    };
   }
 }

@@ -15,6 +15,7 @@ import {
 } from "@/lib/constants/asnwersOptions";
 import { Chord } from "@/lib/engine/Chord";
 import { Interval } from "@/lib/engine/Interval";
+import { Scale } from "@/lib/engine/Scale";
 import { cn } from "@/lib/utils";
 
 function getElementClass(category: string) {
@@ -23,6 +24,8 @@ function getElementClass(category: string) {
       return Interval;
     case "chords":
       return Chord;
+    case "scales":
+      return Scale;
     default:
       return Interval;
   }
