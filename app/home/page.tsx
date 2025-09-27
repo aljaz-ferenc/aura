@@ -39,16 +39,16 @@ export default function HomePage() {
       </div>
       <div className="flex items-center justify-center gap-6">
         <Link
-          href="/practice"
+          href="/play/free"
           className={cn([
             buttonVariants({ variant: "default" }),
             "rounded-full px-10 py-7 text-lg font-bold cursor-pointer",
           ])}
         >
-          Start Practicing
+          Free
         </Link>
         <Link
-          href="/test"
+          href="/play/test"
           className={cn([
             buttonVariants({ variant: "outline" }),
             "rounded-full e px-10 py-7 text-lg font-bold border-primary border-2 hover:outline-primary/80 hover:text-primary/80 text-primary cursor-pointer",

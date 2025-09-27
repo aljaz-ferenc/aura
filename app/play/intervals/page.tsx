@@ -3,7 +3,7 @@
 import { Check, Repeat, SkipForward, Volume2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import EndSessionDialog from "@/app/_components/EndSessionDialog";
-import { IntervalRenderer } from "@/app/practice/intervals/_components/IntervalRenderer";
+import { IntervalRenderer } from "@/app/play/intervals/_components/IntervalRenderer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Interval } from "@/lib/engine/Interval";
@@ -79,27 +79,6 @@ export default function IntervalsPage() {
 
   return (
     <main className="container mx-auto">
-      {/*<div className="flex w-full border-b border-border mx-auto mb-16">*/}
-      {/*  <div className="mx-auto">*/}
-      {/*    {INTERVAL_MODES.map((m) => (*/}
-      {/*      <Button*/}
-      {/*        variant="ghost"*/}
-      {/*        key={m.value}*/}
-      {/*        className={cn([*/}
-      {/*          "text-muted-foreground hover:text-primary border-b-2 rounded-none border-transparent cursor-pointer",*/}
-      {/*          m.value === mode && "text-primary border-primary",*/}
-      {/*        ])}*/}
-      {/*        onClick={() => setMode(m.value)}*/}
-      {/*      >*/}
-      {/*        <div className="flex items-center gap-1">*/}
-      {/*          <span>{m.icon}</span>*/}
-      {/*          <span>{m.label}</span>*/}
-      {/*        </div>*/}
-      {/*      </Button>*/}
-      {/*    ))}*/}
-      {/*  </div>*/}
-      {/*</div>*/}
-
       <div className="text-center">
         <h3 className="text-4xl font-bold">Identify the Interval</h3>
         <p className="text-muted-foreground mt-3">
@@ -123,14 +102,6 @@ export default function IntervalsPage() {
           <Repeat />
           Repeat Interval
         </Button>
-        {/*<Button*/}
-        {/*  className="text-green-500 rounded-full border-none outline-none shadow-sm bg-white hover:bg-green-500 cursor-pointer hover:text-white"*/}
-        {/*  variant="outline"*/}
-        {/*  onClick={() => setEndSessionDialogIsOpen(true)}*/}
-        {/*>*/}
-        {/*  <Check />*/}
-        {/*  End Practice*/}
-        {/*</Button>*/}
       </div>
       <div className="mb-2">
         <span className="text-muted-foreground">Score: </span>

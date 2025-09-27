@@ -7,26 +7,46 @@ const CATEGORIES = [
     title: "Intervals",
     description: "Practice identifying, building and singing intervals.",
     icon: <Music color={"var(--color-primary)"} size={35} />,
-    href: "/practice/intervals",
+    href: "/play/intervals",
+    exercises: [
+      { label: "Listening", value: "listening" },
+      { label: "Singing", value: "singing" },
+      { label: "Constructing", value: "constructing" },
+    ],
   },
   {
     title: "Chords",
     description: "Practice identifying, building and singing chords.",
     icon: <Piano color={"var(--color-primary)"} size={35} />,
-    href: "/practice/chords",
+    href: "/play/chords",
+    exercises: [
+      { label: "Listening", value: "listening" },
+      { label: "Singing", value: "singing" },
+      { label: "Constructing", value: "constructing" },
+    ],
   },
   {
     title: "Scales",
     description: "Practice identifying, building and singing scales.",
     icon: <Scale color={"var(--color-primary)"} size={35} />,
-    href: "/practice/scales",
+    href: "/play/scales",
+    exercises: [
+      { label: "Listening", value: "listening" },
+      { label: "Singing", value: "singing" },
+      { label: "Constructing", value: "constructing" },
+    ],
   },
   {
     title: "Rhythm",
     description:
       "Practice identifying, building and singing rhythmic patterns.",
     icon: <Drum color={"var(--color-primary)"} size={35} />,
-    href: "/practice/rhythm",
+    href: "/play/rhythm",
+    exercises: [
+      { label: "Listening", value: "listening" },
+      { label: "Singing", value: "singing" },
+      { label: "Tapping", value: "tapping" },
+    ],
   },
 ];
 
