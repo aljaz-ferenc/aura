@@ -1,63 +1,31 @@
 "use client";
 import { useEffect, useRef } from "react";
-import {
-  Accidental,
-  Formatter,
-  Renderer,
-  Stave,
-  StaveNote,
-  Voice,
-} from "vexflow";
+import { Formatter, Renderer, Stave, Voice } from "vexflow";
 import type { MusicElement } from "@/app/types";
+import { getHarmonicNotes } from "@/lib/getHarmonicNotes";
+import { getMelodicNotes } from "@/lib/getMelodicNotes";
 import { cn } from "@/lib/utils";
 
 type IntervalRendererProps = {
   element: MusicElement;
   className?: string;
   show?: boolean;
+  mode: "harmonic" | "melodic";
 };
 
 export function NotationRenderer({
   element,
   className,
   show = true,
+  mode = "harmonic",
 }: IntervalRendererProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Convert Note objects to VexFlow StaveNote
     if (!element) return;
-    const keys: string[] = [];
-    const baseNotes = element.notes;
-    baseNotes.forEach((note) => {
-      keys.push(`${note.base.toLowerCase()}/${note.octave}`);
-    });
 
-    const finalNote = new StaveNote({
-      keys,
-      duration: "w",
-      clef: "treble",
-    });
-
-    baseNotes.forEach((note, index) => {
-      if (note.accidentals.sharps > 0) {
-        const accidentalType =
-          note.accidentals.sharps === 1
-            ? "#"
-            : note.accidentals.sharps === 2
-              ? "##"
-              : "###";
-        finalNote.addModifier(new Accidental(accidentalType), index);
-      } else if (note.accidentals.flats > 0) {
-        const accidentalType =
-          note.accidentals.flats === 1
-            ? "b"
-            : note.accidentals.flats === 2
-              ? "bb"
-              : "bbb";
-        finalNote.addModifier(new Accidental(accidentalType), index);
-      }
-    });
+    const notes =
+      mode === "melodic" ? getMelodicNotes(element) : getHarmonicNotes(element);
 
     if (!containerRef.current) return;
     containerRef.current.innerHTML = "";
@@ -68,22 +36,36 @@ export function NotationRenderer({
         Renderer.Backends.SVG,
       );
 
-      renderer.resize(500, 200);
+      const width =
+        mode === "melodic" ? Math.max(500, notes.length * 100) : 500;
+      renderer.resize(width, 200);
+
       const context = renderer.getContext();
-      const stave = new Stave(10, 40, 200);
+      const staveWidth = mode === "melodic" ? width - 20 : 200;
+      const stave = new Stave(10, 40, staveWidth);
 
       stave.addClef("treble");
-
       stave.setContext(context).draw();
 
-      const notes = [finalNote];
+      if (mode === "melodic") {
+        const voice = new Voice({
+          numBeats: notes.length * 4,
+          beatValue: 4,
+        });
+        voice.addTickables(notes);
+        new Formatter().joinVoices([voice]).format([voice], staveWidth - 50);
 
-      const voice = new Voice({ numBeats: 4, beatValue: 4 });
-      voice.addTickables(notes);
-      new Formatter().joinVoices([voice]).format([voice], 350);
+        if (show) {
+          voice.draw(context, stave);
+        }
+      } else {
+        const voice = new Voice({ numBeats: 4, beatValue: 4 });
+        voice.addTickables(notes);
+        new Formatter().joinVoices([voice]).format([voice], 350);
 
-      if (show) {
-        voice.draw(context, stave);
+        if (show) {
+          voice.draw(context, stave);
+        }
       }
     } catch (error) {
       console.error("Error rendering music notation:", error);
@@ -94,7 +76,7 @@ export function NotationRenderer({
         containerRef.current.innerHTML = "";
       }
     };
-  }, [element, show]);
+  }, [element, show, mode]);
 
   return <div ref={containerRef} className={cn(["mx-auto", className])} />;
 }

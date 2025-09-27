@@ -85,13 +85,13 @@ export const CHORD_OPTIONS: AnswerOption[] = [
   },
 
   // ===== POWER CHORD =====
-  {
-    symbol: "5",
-    fullName: "Power Chord",
-    category: "power",
-    type: "dyad",
-    schema: ["P5"],
-  },
+  // {
+  //   symbol: "5",
+  //   fullName: "Power Chord",
+  //   category: "power",
+  //   type: "dyad",
+  //   schema: ["P5"],
+  // },
 
   // ===== ADD CHORDS (TRIAD-BASED) =====
   {

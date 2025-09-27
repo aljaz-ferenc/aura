@@ -94,15 +94,12 @@ export default function ListeningExercisePage() {
   }
 
   useEffect(() => {
-    if (currentElement) return;
-    initElement();
-  }, [currentElement, initElement]);
-
-  useEffect(() => {
-    if (currentElement?.element) {
+    if (!currentElement?.element) {
+      initElement();
+    } else {
       currentElement.element.play();
     }
-  }, [currentElement]);
+  }, [currentElement, initElement]);
 
   function onNextRound() {
     initElement();
@@ -158,6 +155,9 @@ export default function ListeningExercisePage() {
       </div>
       <div className={cn([""])}>
         <NotationRenderer
+          mode={
+            currentElement.element instanceof Scale ? "melodic" : "harmonic"
+          }
           element={currentElement.element}
           show={guessedCorrectly !== null}
           className={cn(["bg-white rounded-md"])}

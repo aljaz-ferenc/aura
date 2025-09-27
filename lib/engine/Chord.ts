@@ -50,6 +50,7 @@ export class Chord {
   notes: Note[];
 
   constructor(notes: Note[]) {
+    console.log(notes);
     if (notes.length < 3) {
       throw new Error(
         `Chord must have at least three notes. You provided: ${notes.length}.`,
@@ -88,7 +89,10 @@ export class Chord {
   static random(chordTypes: string[]) {
     const randomType =
       chordTypes[Math.floor(Math.random() * chordTypes.length)];
+
+    console.log(randomType);
     const randomChord = Chord.from(Note.random(), randomType as ChordType);
+    console.log(randomChord);
 
     return {
       element: randomChord,
