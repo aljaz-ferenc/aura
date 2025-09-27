@@ -14,7 +14,7 @@ import { cn } from "@/lib/utils/cn";
 
 type EndPracticeDialogProps = {
   endSessionDialogIsOpen: boolean;
-  setEndSessionDialogIsOpen: Dispatch<SetStateAction<boolean>>;
+  setEndSessionDialogIsOpen: (open: boolean) => void;
 };
 
 export default function EndSessionDialog({

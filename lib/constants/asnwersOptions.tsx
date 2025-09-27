@@ -1,10 +1,4 @@
-type AnswerOption = {
-  symbol: string;
-  fullName: string;
-  category?: string;
-  type?: string;
-  schema?: string[];
-};
+import type { AnswerOption } from "@/app/types";
 
 export const INTERVAL_OPTIONS: AnswerOption[] = [
   // Simple Intervals (Up to Octave)

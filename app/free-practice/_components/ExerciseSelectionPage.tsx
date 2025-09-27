@@ -1,13 +1,14 @@
 "use client";
 
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { CATEGORIES } from "@/lib/constants/categories";
 import { cn } from "@/lib/utils/cn";
 
-export default function SelectCategoryPage() {
+export default function ExerciseSelection() {
   const [selectedCategory, setSelectedCategory] = useState(CATEGORIES[0]);
 
   return (
@@ -65,7 +66,7 @@ export default function SelectCategoryPage() {
             {selectedCategory.exercises.map((exercise) => (
               <Link
                 key={selectedCategory.slug + exercise.slug}
-                href={`/play/free/${selectedCategory.slug}/${exercise.slug}`}
+                href={`/free-practice?category=${selectedCategory.slug}&exercise=${exercise.slug}`}
                 className={cn([
                   buttonVariants({ variant: "outline" }),
                   "max-w-50 w-full",
