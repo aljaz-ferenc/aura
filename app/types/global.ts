@@ -31,6 +31,6 @@ export type AnswerOption = {
   schema?: string[];
 };
 
-export type SessionStatus = "loading" | "ready" | "playing" | "error";
+export type SessionStatus = "loading" | "ready" | "playing" | 'checking' | "error";
 
 export type Category = (typeof CATEGORIES)[0];

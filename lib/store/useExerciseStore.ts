@@ -39,9 +39,12 @@ interface ExerciseState {
   onNextRound: () => void;
   onRepeat: () => void;
   onGuess: (guessedLabel: string) => void;
+  onCheck: () => void;
   setEndSessionDialogIsOpen: (open: boolean) => void;
   start: () => void;
   resetStore: () => void;
+  onChecked: (correct: boolean) => void;
+    addGuessToHistory: (correct: boolean) => void
 }
 
 function getElementClass(category: ExerciseCategory) {
@@ -111,10 +114,16 @@ export const useExerciseStore = create<ExerciseState>((set, get) => ({
 
     try {
       const currentElement = state.ElementClass.random(state.selectedLabels);
+      const getNextStatus = () => {
+        if (state.status === "loading") {
+          return "ready";
+        }
+        return "playing";
+      };
       set({
         currentElement,
         guessedCorrectly: null,
-        status: get().status === "loading" ? "ready" : get().status,
+        status: getNextStatus(),
       });
     } catch (error) {
       set({ status: "error" });
@@ -130,7 +139,13 @@ export const useExerciseStore = create<ExerciseState>((set, get) => ({
   onRepeat: () => {
     const state = get();
     if (state.currentElement?.element) {
-      state.currentElement.element.play();
+      switch (state.exercise) {
+        case "listening":
+          state.currentElement.element.play();
+          break;
+        case "singing":
+          state.currentElement.element.notes[0].play();
+      }
     }
   },
 
@@ -142,19 +157,42 @@ export const useExerciseStore = create<ExerciseState>((set, get) => ({
     }
 
     const wasGuessCorrect = guessedLabel === state.currentElement.label;
-
-    set({
-      guessedCorrectly: wasGuessCorrect,
-      history: [
-        ...state.history,
-        {
-          elementLabel: state.currentElement.label,
-          wasGuessCorrect,
-          guessedLabel,
-        },
-      ],
-    });
+      state.addGuessToHistory(wasGuessCorrect)
   },
+
+  onCheck: () => {
+    set({ status: "checking" });
+    get().currentElement?.element.play("melodic");
+  },
+
+  onChecked(correct) {
+    set({ status: "playing" });
+    const state = get();
+
+    if (!state.currentElement) {
+      return;
+    }
+
+      state.addGuessToHistory(correct)
+    state.onNextRound();
+  },
+
+    addGuessToHistory: (correct) => {
+      const state = get()
+        if(!state.currentElement?.label) return state
+        const guessedLabel = state.currentElement.label;
+      set({
+          guessedCorrectly: correct,
+          history: [
+              ...state.history,
+              {
+                  elementLabel: state.currentElement.label,
+                  wasGuessCorrect: correct,
+                  guessedLabel,
+              },
+          ],
+      })
+    },
 
   setEndSessionDialogIsOpen: (endSessionDialogIsOpen) =>
     set({ endSessionDialogIsOpen }),

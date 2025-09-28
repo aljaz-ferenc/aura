@@ -39,7 +39,7 @@ export default function HomePage() {
       </div>
       <div className="flex items-center justify-center gap-6">
         <Link
-          href="/play/free"
+          href="/free-practice"
           className={cn([
             buttonVariants({ variant: "default" }),
             "rounded-full px-10 py-7 text-lg font-bold cursor-pointer",

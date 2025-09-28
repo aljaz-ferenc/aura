@@ -1,4 +1,5 @@
 import ListeningInterface from "@/app/_components/ListeningInterface";
+import SingingInterface from "@/app/_components/SingingInterface";
 import ExerciseSelectionScreen from "@/app/free-practice/_components/ExerciseSelectionScreen";
 import { validateSearchParams } from "@/lib/utils/validateSearchParams";
 
@@ -22,6 +23,7 @@ export default async function FreePracticePage(props: {
   return (
     <main className="container mx-auto">
       {exercise === "listening" && <ListeningInterface />}
+      {exercise === "singing" && <SingingInterface />}
     </main>
   );
 }

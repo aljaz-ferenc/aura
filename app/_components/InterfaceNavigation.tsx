@@ -1,6 +1,7 @@
 "use client";
 
-import { Repeat, SkipForward } from "lucide-react";
+import { Check, Repeat, SkipForward } from "lucide-react";
+import { useEffect } from "react";
 import { useShallow } from "zustand/react/shallow";
 import type { ExerciseCategory } from "@/app/types";
 import { Button } from "@/components/ui/button";
@@ -35,6 +36,9 @@ export default function InterfaceNavigation() {
     start,
     currentElement,
     category,
+    exercise,
+    onCheck,
+    onChecked,
   } = useExerciseStore(useShallow((state) => state));
 
   return (
@@ -48,7 +52,7 @@ export default function InterfaceNavigation() {
           Start <SkipForward />
         </Button>
       )}
-      {status === "playing" && (
+      {status === "playing" && exercise !== "singing" && (
         <div className="w-full text-center relative flex items-center justify-center mt-10">
           <Button
             className="rounded-full !px-14 py-8 text-lg font-bold cursor-pointer flex gap-2 mx-0"
@@ -70,17 +74,69 @@ export default function InterfaceNavigation() {
         </div>
       )}
 
+      {status === "playing" && exercise === "singing" && (
+        <div className="w-full text-center relative flex items-center justify-center mt-10">
+          <Button
+            className="rounded-full !px-14 py-8 text-lg font-bold cursor-pointer flex gap-2 mx-0"
+            onClick={onCheck}
+          >
+            Check
+            <SkipForward />
+          </Button>
+          {exercise !== "singing" &&
+            category &&
+            ["intervals", "chords"].includes(category) && (
+              <Button
+                onClick={() => currentElement?.element.play("melodic")}
+                variant="outline"
+                className="absolute rounded-full text-xs border-none bg-white cursor-pointer hover:bg-white hover:opacity-100 hover:text-primary opacity-80 top-1/2 -translate-y-1/2 right-0 text-primary"
+              >
+                Play sequentially
+              </Button>
+            )}
+        </div>
+      )}
+
+      {status === "checking" && (
+        <div className="w-full text-center relative flex items-center justify-center mt-10 gap-3">
+          <Button
+            className="rounded-full !px-14 py-8 text-lg font-bold cursor-pointer flex gap-2 mx-0"
+            onClick={() => onChecked(true)}
+          >
+            Correct
+            <Check />
+          </Button>
+          <Button
+            className="rounded-full !px-14 py-8 text-lg font-bold cursor-pointer flex gap-2 mx-0"
+            onClick={() => onChecked(false)}
+          >
+            Incorrect
+            <SkipForward />
+          </Button>
+          <Button
+            onClick={() => currentElement?.element.play("melodic")}
+            variant="outline"
+            className="absolute rounded-full text-xs border-none bg-white cursor-pointer hover:bg-white hover:opacity-100 hover:text-primary opacity-80 top-1/2 -translate-y-1/2 right-0 text-primary"
+          >
+            Play Interval
+          </Button>
+        </div>
+      )}
+
       <Button
         className={cn([
           "text-primary rounded-full border-none outline-none shadow-sm bg-white hover:!bg-primary cursor-pointer hover:text-white",
         ])}
         variant="outline"
         onClick={onRepeat}
-        disabled={status !== "playing"}
+        disabled={status === "ready" || status === "loading"}
       >
         <Repeat />
-        {buttonsText[category as ExerciseCategory]?.repeat || ""}
+        {exercise !== "singing"
+          ? buttonsText[category as ExerciseCategory]?.repeat || ""
+          : "Repeat first note"}
       </Button>
+      {exercise === "singing" && currentElement?.label}
     </div>
   );
 }
