@@ -8,35 +8,35 @@ export class Interval {
     this.notes = notes;
   }
 
-  async play(mode: "harmonic" | "melodic" | "reversed" = "harmonic") {
+  public async play(mode: "harmonic" | "melodic" | "reversed" = "harmonic") {
     await sampler.playInterval({
       notes: this.notes.map((n) => n.label),
       mode,
     });
   }
 
-  static from(bassNote: Note, intervalLabel: string) {
-    const match = intervalLabel.match(/^([A]+|[d]+|P|M|m)(\d+)$/);
-    if (!match) throw new Error(`Invalid interval: ${intervalLabel}`);
+  public static from(bassNote: Note, intervalSymbol: string) {
+    const match = intervalSymbol.match(/^([A]+|[d]+|P|M|m)(\d+)$/);
+    if (!match) throw new Error(`Invalid interval: ${intervalSymbol}`);
 
-    return new Interval([bassNote, bassNote.transpose(intervalLabel)]);
+    return new Interval([bassNote, bassNote.transpose(intervalSymbol)]);
   }
 
-  static random(intervalLabels: string[]) {
-    const randomLabel =
-      intervalLabels[Math.floor(Math.random() * intervalLabels.length)];
+  public static random(intervalSymbols: string[]) {
+    const randomSymbol =
+        intervalSymbols[Math.floor(Math.random() * intervalSymbols.length)];
 
-    const match = randomLabel.match(/^([A]+|[d]+|P|M|m)(\d+)$/);
+    const match = randomSymbol.match(/^([A]+|[d]+|P|M|m)(\d+)$/);
     if (!match)
       throw new Error(
-        `Invalid interval label when generating random interval: ${randomLabel}`,
+        `Invalid interval label when generating random interval: ${randomSymbol}`,
       );
 
-    const randomInterval = Interval.from(Note.random(), randomLabel);
+    const randomInterval = Interval.from(Note.random(), randomSymbol);
 
     return {
       element: randomInterval,
-      label: randomLabel,
+      label: randomSymbol,
     };
   }
 }

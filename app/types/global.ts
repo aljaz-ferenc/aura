@@ -23,13 +23,26 @@ export const exerciseTypeSchema = z.enum([
 ]);
 export type ExerciseType = z.infer<typeof exerciseTypeSchema>;
 
-export type AnswerOption = {
-  symbol: string;
-  fullName: string;
-  category?: string;
-  type?: string;
-  schema?: string[];
-};
+export type ElementData = IntervalData | ChordData | ScaleData
+
+type ElementBase = {
+    symbol: string;
+    fullName: string;
+    category: string;
+}
+
+export type IntervalData = {
+} & ElementBase
+
+export type ChordData = {
+    type: string;
+    schema: string[];
+} & ElementBase
+
+export type ScaleData = {
+    type: string;
+    schema: string[];
+} & ElementBase
 
 export type SessionStatus = "loading" | "ready" | "playing" | 'checking' | "error";
 

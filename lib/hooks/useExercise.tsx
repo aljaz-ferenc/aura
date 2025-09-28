@@ -4,9 +4,9 @@ import { useParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { MusicElement } from "@/app/types";
 import {
-  CHORD_OPTIONS,
-  INTERVAL_OPTIONS,
-  SCALE_OPTIONS,
+  CHORDS_DATA,
+  INTERVALS_DATA,
+  SCALES_DATA,
 } from "@/lib/constants/asnwersOptions";
 import { Chord } from "@/lib/engine/Chord";
 import { Interval } from "@/lib/engine/Interval";
@@ -28,13 +28,13 @@ function getElementClass(category: string) {
 function getElementOptions(category: string) {
   switch (category) {
     case "intervals":
-      return INTERVAL_OPTIONS;
+      return INTERVALS_DATA;
     case "chords":
-      return CHORD_OPTIONS;
+      return CHORDS_DATA;
     case "scales":
-      return SCALE_OPTIONS;
+      return SCALES_DATA;
     default:
-      return INTERVAL_OPTIONS;
+      return INTERVALS_DATA;
   }
 }
 

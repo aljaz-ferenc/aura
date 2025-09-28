@@ -1,19 +1,18 @@
 import { create } from "zustand";
 import type {
-  AnswerOption,
+  ElementData,
   ExerciseCategory,
   ExerciseType,
   MusicElement,
   SessionStatus,
 } from "@/app/types";
-import {
-  CHORD_OPTIONS,
-  INTERVAL_OPTIONS,
-  SCALE_OPTIONS,
-} from "@/lib/constants/asnwersOptions";
+
 import { Chord } from "@/lib/engine/Chord";
 import { Interval } from "@/lib/engine/Interval";
 import { Scale } from "@/lib/engine/Scale";
+import {INTERVALS_DATA} from "@/lib/constants/intervalsData";
+import {CHORDS_DATA} from "@/lib/constants/chordsData";
+import {SCALES_DATA} from "@/lib/constants/scalesData";
 
 interface HistoryItem {
   elementLabel: string;
@@ -29,7 +28,7 @@ interface ExerciseState {
   history: HistoryItem[];
   endSessionDialogIsOpen: boolean;
 
-  answerOptions: AnswerOption[];
+  answerOptions: ElementData[];
   selectedLabels: string[];
   ElementClass: any;
   status: SessionStatus;
@@ -63,13 +62,13 @@ function getElementClass(category: ExerciseCategory) {
 function getElementOptions(category: ExerciseCategory) {
   switch (category) {
     case "intervals":
-      return INTERVAL_OPTIONS;
+      return INTERVALS_DATA;
     case "chords":
-      return CHORD_OPTIONS;
+      return CHORDS_DATA;
     case "scales":
-      return SCALE_OPTIONS;
+      return SCALES_DATA;
     default:
-      return INTERVAL_OPTIONS;
+      return INTERVALS_DATA;
   }
 }
 
