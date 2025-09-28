@@ -123,7 +123,7 @@ export class Sampler {
 
   async playInterval({
     notes,
-    spread = 0.5,
+    spread = 0.7,
     mode = "melodic",
   }: {
     notes: Note[];

@@ -14,6 +14,29 @@ import { Scale } from "@/lib/engine/Scale";
 import { useExerciseStore } from "@/lib/store/useExerciseStore";
 import { cn } from "@/lib/utils/cn";
 
+const headerText: Record<ExerciseCategory, any> = {
+  intervals: {
+    title: "Identify the INTERVAL",
+    instructions:
+      "Listen to the interval and select the correct type from the options.",
+  },
+  chords: {
+    title: "Identify the CHORD",
+    instructions:
+      "Listen to the chord and select the correct type from the options.",
+  },
+  scales: {
+    title: "Identify the SCALE",
+    instructions:
+      "Listen to the scale and select the correct type from the options.",
+  },
+  rhythm: {
+    title: "Identify the RHYTHM",
+    instructions:
+      "Listen to the rhythm and select the correct type from the options.",
+  },
+};
+
 export default function ListeningInterface() {
   const searchParams = useSearchParams();
   const category = searchParams.get("category");
@@ -34,8 +57,10 @@ export default function ListeningInterface() {
 
   return (
     <InterfaceLayout
-      instructions={`Listen to the ${category} and select the correct type from the options.`}
-      title={`Identify the ${category}`}
+      instructions={
+        headerText[category as ExerciseCategory]?.instructions || ""
+      }
+      title={headerText[category as ExerciseCategory]?.title || ""}
     >
       <InterfaceNavigation />
       <InterfaceScore />

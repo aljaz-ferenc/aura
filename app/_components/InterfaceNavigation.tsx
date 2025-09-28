@@ -2,13 +2,40 @@
 
 import { Repeat, SkipForward } from "lucide-react";
 import { useShallow } from "zustand/react/shallow";
+import type { ExerciseCategory } from "@/app/types";
 import { Button } from "@/components/ui/button";
 import { useExerciseStore } from "@/lib/store/useExerciseStore";
 import { cn } from "@/lib/utils/cn";
 
+const buttonsText: Record<ExerciseCategory, any> = {
+  intervals: {
+    next: "Next Interval",
+    repeat: "Repeat Interval",
+  },
+  chords: {
+    next: "Next Chord",
+    repeat: "Repeat Chord",
+  },
+  scales: {
+    next: "Next Scale",
+    repeat: "Repeat Scale",
+  },
+  rhythm: {
+    next: "Next Rhythm",
+    repeat: "Repeat Rhythm",
+  },
+};
+
 export default function InterfaceNavigation() {
-  const { onNextRound, guessedCorrectly, onRepeat, status, start } =
-    useExerciseStore(useShallow((state) => state));
+  const {
+    onNextRound,
+    guessedCorrectly,
+    onRepeat,
+    status,
+    start,
+    currentElement,
+    category,
+  } = useExerciseStore(useShallow((state) => state));
 
   return (
     <div className="flex flex-col justify-center gap-3 items-center">
@@ -22,13 +49,25 @@ export default function InterfaceNavigation() {
         </Button>
       )}
       {status === "playing" && (
-        <Button
-          className="rounded-full !px-14 py-8 text-lg font-bold cursor-pointer flex gap-2 mt-10 mx-0"
-          onClick={onNextRound}
-          disabled={guessedCorrectly === null}
-        >
-          Next Interval <SkipForward />
-        </Button>
+        <div className="w-full text-center relative flex items-center justify-center mt-10">
+          <Button
+            className="rounded-full !px-14 py-8 text-lg font-bold cursor-pointer flex gap-2 mx-0"
+            onClick={onNextRound}
+            disabled={guessedCorrectly === null}
+          >
+            {buttonsText[category as ExerciseCategory]?.next || ""}{" "}
+            <SkipForward />
+          </Button>
+          {category && ["intervals", "chords"].includes(category) && (
+            <Button
+              onClick={() => currentElement?.element.play("melodic")}
+              variant="outline"
+              className="absolute rounded-full text-xs border-none bg-white cursor-pointer hover:bg-white hover:opacity-100 hover:text-primary opacity-80 top-1/2 -translate-y-1/2 right-0 text-primary"
+            >
+              Play sequentially
+            </Button>
+          )}
+        </div>
       )}
 
       <Button
@@ -40,7 +79,7 @@ export default function InterfaceNavigation() {
         disabled={status !== "playing"}
       >
         <Repeat />
-        Repeat Interval
+        {buttonsText[category as ExerciseCategory]?.repeat || ""}
       </Button>
     </div>
   );
