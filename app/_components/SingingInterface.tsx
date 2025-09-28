@@ -3,7 +3,6 @@
 import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { useShallow } from "zustand/react/shallow";
-import InterfaceAnswerOptions from "@/app/_components/InterfaceAnswerOptions";
 import InterfaceNavigation from "@/app/_components/InterfaceNavigation";
 import InterfaceScore from "@/app/_components/InterfaceScore";
 import LoadingPage from "@/app/_components/LoadingPage";
@@ -76,7 +75,7 @@ export default function SingingInterface() {
               ? new Interval([currentElement.element.notes[0]])
               : currentElement.element
           }
-          show={true}
+          show={status !== 'ready'}
           className={cn(["bg-white rounded-md"])}
         />
       )}

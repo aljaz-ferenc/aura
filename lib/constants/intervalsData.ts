@@ -1,32 +1,47 @@
 import { IntervalData} from "@/app/types";
 
 export const INTERVALS_DATA: IntervalData[] = [
-    // Simple Intervals (Up to Octave)
-    { symbol: "P1", fullName: "Perfect Unison", category: "perfect" },
-    { symbol: "m2", fullName: "Minor Second", category: "minor" },
-    { symbol: "M2", fullName: "Major Second", category: "major" },
-    { symbol: "m3", fullName: "Minor Third", category: "minor" },
-    { symbol: "M3", fullName: "Major Third", category: "major" },
-    { symbol: "P4", fullName: "Perfect Fourth", category: "perfect" },
-    { symbol: "A4", fullName: "Augmented Fourth", category: "augmented" },
-    { symbol: "P5", fullName: "Perfect Fifth", category: "perfect" },
-    { symbol: "m6", fullName: "Minor Sixth", category: "minor" },
-    { symbol: "M6", fullName: "Major Sixth", category: "major" },
-    { symbol: "m7", fullName: "Minor Seventh", category: "minor" },
-    { symbol: "M7", fullName: "Major Seventh", category: "major" },
-    { symbol: "P8", fullName: "Perfect Octave", category: "perfect" },
+    // ===== UNISONS =====
+    { symbol: "P1", fullName: "Perfect Unison", category: "unisons" },
 
-    // Compound Intervals (9th to 15th)
-    { symbol: "m9", fullName: "Minor Ninth", category: "minor" },
-    { symbol: "M9", fullName: "Major Ninth", category: "major" },
-    { symbol: "m10", fullName: "Minor Tenth", category: "minor" },
-    { symbol: "M10", fullName: "Major Tenth", category: "major" },
-    { symbol: "P11", fullName: "Perfect Eleventh", category: "perfect" },
-    { symbol: "A11", fullName: "Augmented Eleventh", category: "augmented" },
-    { symbol: "P12", fullName: "Perfect Twelfth", category: "perfect" },
-    { symbol: "m13", fullName: "Minor Thirteenth", category: "minor" },
-    { symbol: "M13", fullName: "Major Thirteenth", category: "major" },
-    { symbol: "m14", fullName: "Minor Fourteenth", category: "minor" },
-    { symbol: "M14", fullName: "Major Fourteenth", category: "major" },
-    { symbol: "P15", fullName: "Perfect Fifteenth", category: "perfect" },
+    // ===== SECONDS =====
+    { symbol: "m2", fullName: "Minor Second", category: "seconds" },
+    { symbol: "M2", fullName: "Major Second", category: "seconds" },
+
+    // ===== THIRDS =====
+    { symbol: "m3", fullName: "Minor Third", category: "thirds" },
+    { symbol: "M3", fullName: "Major Third", category: "thirds" },
+
+    // ===== FOURTHS =====
+    { symbol: "P4", fullName: "Perfect Fourth", category: "fourths" },
+    { symbol: "A4", fullName: "Augmented Fourth", category: "fourths" },
+
+    // ===== FIFTHS =====
+    { symbol: "P5", fullName: "Perfect Fifth", category: "fifths" },
+    { symbol: "d5", fullName: "Diminished Fifth", category: "fifths" },
+
+    // ===== SIXTHS =====
+    { symbol: "m6", fullName: "Minor Sixth", category: "sixths" },
+    { symbol: "M6", fullName: "Major Sixth", category: "sixths" },
+
+    // ===== SEVENTHS =====
+    { symbol: "m7", fullName: "Minor Seventh", category: "sevenths" },
+    { symbol: "M7", fullName: "Major Seventh", category: "sevenths" },
+
+    // ===== OCTAVES =====
+    { symbol: "P8", fullName: "Perfect Octave", category: "octaves" },
+
+    // ===== COMPOUND INTERVALS =====
+    { symbol: "m9", fullName: "Minor Ninth", category: "ninths" },
+    { symbol: "M9", fullName: "Major Ninth", category: "ninths" },
+    { symbol: "m10", fullName: "Minor Tenth", category: "tenths" },
+    { symbol: "M10", fullName: "Major Tenth", category: "tenths" },
+    { symbol: "P11", fullName: "Perfect Eleventh", category: "elevenths" },
+    { symbol: "A11", fullName: "Augmented Eleventh", category: "elevenths" },
+    { symbol: "P12", fullName: "Perfect Twelfth", category: "twelfths" },
+    { symbol: "m13", fullName: "Minor Thirteenth", category: "thirteenths" },
+    { symbol: "M13", fullName: "Major Thirteenth", category: "thirteenths" },
+    { symbol: "m14", fullName: "Minor Fourteenth", category: "fourteenths" },
+    { symbol: "M14", fullName: "Major Fourteenth", category: "fourteenths" },
+    { symbol: "P15", fullName: "Perfect Fifteenth", category: "fifteenths" },
 ] as const;
