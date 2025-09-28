@@ -1,82 +1,166 @@
-import {Accordion, AccordionContent, AccordionItem, AccordionTrigger} from "@/components/ui/accordion";
-import {cn} from "@/lib/utils/cn";
-import {Checkbox} from "@/components/ui/checkbox";
-import type {Category, ExerciseCategory} from "@/app/types";
-import {useEffect, useMemo, useState} from "react";
-import {INTERVALS_DATA} from "@/lib/constants/intervalsData";
-import {CHORDS_DATA} from "@/lib/constants/chordsData";
-import {SCALES_DATA} from "@/lib/constants/scalesData";
-import {Button} from "@/components/ui/button";
+import { Settings } from "lucide-react";
+import { useMemo, useState } from "react";
+import { ChordDisplay } from "@/app/_components/ChordDisplay";
+import type { Category, ExerciseCategory } from "@/app/types";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { CHORDS_DATA } from "@/lib/constants/chordsData";
+import { INTERVALS_DATA } from "@/lib/constants/intervalsData";
+import { SCALES_DATA } from "@/lib/constants/scalesData";
+import { cn } from "@/lib/utils/cn";
 
 function getElementOptions(category: ExerciseCategory) {
-    switch (category) {
-        case "intervals":
-            return INTERVALS_DATA;
-        case "chords":
-            return CHORDS_DATA;
-        case "scales":
-            return SCALES_DATA;
-        default:
-            return INTERVALS_DATA;
-    }
+  switch (category) {
+    case "intervals":
+      return INTERVALS_DATA;
+    case "chords":
+      return CHORDS_DATA;
+    case "scales":
+      return SCALES_DATA;
+    default:
+      return INTERVALS_DATA;
+  }
 }
 
 type ExerciseSettingsAccordionProps = {
-    category: Category
-}
+  category: Category;
+};
 
-export default function ExerciseSettingsAccordion({category}: ExerciseSettingsAccordionProps){
-    const answerOptions = getElementOptions(category.slug as ExerciseCategory)
-    const [selectedElements, setSelectedElements] = useState<string[]>([])
+export default function ExerciseSettingsAccordion({
+  category,
+}: ExerciseSettingsAccordionProps) {
+  const answerOptions = getElementOptions(category.slug as ExerciseCategory);
+  const [selectedElements, setSelectedElements] = useState<Set<string>>(
+    new Set(),
+  );
 
-    const groups = useMemo(() => {
-        if (!answerOptions || answerOptions.length === 0) return [];
-        return Object.groupBy(answerOptions, (option) => option.category);
-    }, [answerOptions]);
+  const groups = useMemo(() => {
+    if (!answerOptions || answerOptions.length === 0) return [];
+    return Object.groupBy(answerOptions, (option) => option.category);
+  }, [answerOptions]);
 
-    function onCheckedChange(checked: boolean, symbol: string){
-        if(checked){
-            setSelectedElements(prev => [...prev, symbol])
-            return
-        }
-
-        setSelectedElements(prev => [...prev].filter(s => s !== symbol))
+  function onCheckedChange(checked: boolean, symbol: string) {
+    if (checked) {
+      setSelectedElements((prev) => new Set([...prev, symbol]));
+      return;
     }
 
-    function onSave(){
-        console.log(selectedElements)
-    }
+    setSelectedElements((prev) => {
+      const newSet = new Set(prev);
+      newSet.delete(symbol);
+      return newSet;
+    });
+  }
 
-    return (
-        <Accordion type='multiple'>
-            <AccordionItem value='settings'>
-                <AccordionTrigger className='text-xl font-bold hover:underline-none'>
-                    Settings
-                </AccordionTrigger>
-                <AccordionContent>
-                    {groups && Object.entries(groups).map(([group, options]) => {
-                        return (
-                            <div key={group}>
-                                <hr className='my-5'/>
-                                <h4 className='uppercase font-bold text-xs text-muted-foreground mb-2'>{group}</h4>
-                                <div className='grid grid-cols-4 gap-3'>
-                                    {options?.map((option) => (
-                                        <label htmlFor={option.symbol} key={option.symbol}  className={cn([
-                                            "text-left flex justify-start gap-3 border rounded-md py-2 px-3 items-center ",
-                                        ])}>
-                                            <Checkbox checked={selectedElements.some(s => s===option.symbol)} onCheckedChange={(checked) => onCheckedChange(!!checked, option.symbol)} id={option.symbol} className='peer bg-primary-foreground'/>
-                                            <span className='mr-auto'>
-                                                    {option.symbol}
-                                                    </span>
-                                        </label>
-                                    ))}
-                                </div>
-                            </div>
-                        )
+  function onSave() {
+    console.log(selectedElements);
+  }
+
+  return (
+    <Accordion type="multiple">
+      <AccordionItem value="settings">
+        <AccordionTrigger className="text-xl font-bold hover:underline-none flex gap-4 justify-start items-center">
+          <Settings />
+          <span className="mr-auto">Settings</span>
+        </AccordionTrigger>
+        <AccordionContent>
+          {groups &&
+            Object.entries(groups).map(([group, options]) => {
+              return (
+                <div key={group}>
+                  <div className="flex justify-between items-center mb-2">
+                    <h4 className="uppercase font-bold text-sm text-muted-foreground">
+                      {group}
+                    </h4>
+                    {options && (
+                      <div>
+                        <Button
+                          variant="link"
+                          className="cursor-pointer"
+                          onClick={() =>
+                            setSelectedElements((prev) => {
+                              return new Set([
+                                ...prev,
+                                ...options.map((option) => option.symbol),
+                              ]);
+                            })
+                          }
+                        >
+                          Select all
+                        </Button>
+                        <Button
+                          variant="link"
+                          className="cursor-pointer"
+                          onClick={() => {
+                            const symbolsToRemove = new Set(
+                              options.map((o) => o.symbol),
+                            );
+                            setSelectedElements(
+                              (prev) =>
+                                new Set(
+                                  [...prev].filter(
+                                    (s) => !symbolsToRemove.has(s),
+                                  ),
+                                ),
+                            );
+                          }}
+                        >
+                          Deselect all
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                  <div className="grid grid-cols-4 gap-3">
+                    {options?.map((option) => {
+                      const checked = selectedElements.has(option.symbol);
+                      return (
+                        <label
+                          htmlFor={option.symbol}
+                          key={option.symbol}
+                          className={cn([
+                            "text-left flex justify-start gap-3 border rounded-md py-2 px-3 items-center bravura-text",
+                            checked && "bg-secondary",
+                          ])}
+                        >
+                          <Checkbox
+                            checked={checked}
+                            onCheckedChange={(checked) =>
+                              onCheckedChange(!!checked, option.symbol)
+                            }
+                            id={option.symbol}
+                            className="peer bg-primary-foreground"
+                          />
+                          <span
+                            className={cn([
+                              "mr-auto",
+                              category.slug === "scales" && "capitalize",
+                            ])}
+                          >
+                            {category.slug === "chords" ? (
+                              <ChordDisplay symbol={option.symbol} />
+                            ) : (
+                              option.symbol
+                            )}
+                          </span>
+                        </label>
+                      );
                     })}
-                    <Button onClick={onSave} className='mt-5'>Save</Button>
-                </AccordionContent>
-            </AccordionItem>
-        </Accordion>
-    )
+                  </div>
+                  <hr className="my-5" />
+                </div>
+              );
+            })}
+          <Button onClick={onSave} className="cursor-pointer">
+            Save
+          </Button>
+        </AccordionContent>
+      </AccordionItem>
+    </Accordion>
+  );
 }

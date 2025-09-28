@@ -123,3 +123,23 @@
 .container {
   @apply max-w-7xl mx-auto p-8;
 }
+
+@font-face {
+  font-family: "Bravura";
+  src: url("../public/fonts/Bravura.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "BravuraText";
+  src: url("../public/fonts/BravuraText.woff2") format("woff2");
+}
+
+.bravura-font {
+  font-family: "Bravura", sans-serif;
+  font-size: 1em;
+}
+
+.bravura-text {
+  font-family: "BravuraText", sans-serif;
+  font-size: 1em;
+}

@@ -1,31 +1,31 @@
 "use client";
 
 import { Check, Repeat, SkipForward } from "lucide-react";
-import { useEffect } from "react";
 import { useShallow } from "zustand/react/shallow";
 import type { ExerciseCategory } from "@/app/types";
 import { Button } from "@/components/ui/button";
 import { useExerciseStore } from "@/lib/store/useExerciseStore";
 import { cn } from "@/lib/utils/cn";
 
-const buttonsText: Record<ExerciseCategory, any> = {
-  intervals: {
-    next: "Next Interval",
-    repeat: "Repeat Interval",
-  },
-  chords: {
-    next: "Next Chord",
-    repeat: "Repeat Chord",
-  },
-  scales: {
-    next: "Next Scale",
-    repeat: "Repeat Scale",
-  },
-  rhythm: {
-    next: "Next Rhythm",
-    repeat: "Repeat Rhythm",
-  },
-};
+const buttonsText: Record<ExerciseCategory, { next: string; repeat: string }> =
+  {
+    intervals: {
+      next: "Next Interval",
+      repeat: "Repeat Interval",
+    },
+    chords: {
+      next: "Next Chord",
+      repeat: "Repeat Chord",
+    },
+    scales: {
+      next: "Next Scale",
+      repeat: "Repeat Scale",
+    },
+    rhythm: {
+      next: "Next Rhythm",
+      repeat: "Repeat Rhythm",
+    },
+  };
 
 export default function InterfaceNavigation() {
   const {

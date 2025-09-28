@@ -6,13 +6,12 @@ import type {
   MusicElement,
   SessionStatus,
 } from "@/app/types";
-
+import { CHORDS_DATA } from "@/lib/constants/chordsData";
+import { INTERVALS_DATA } from "@/lib/constants/intervalsData";
+import { SCALES_DATA } from "@/lib/constants/scalesData";
 import { Chord } from "@/lib/engine/Chord";
 import { Interval } from "@/lib/engine/Interval";
 import { Scale } from "@/lib/engine/Scale";
-import {INTERVALS_DATA} from "@/lib/constants/intervalsData";
-import {CHORDS_DATA} from "@/lib/constants/chordsData";
-import {SCALES_DATA} from "@/lib/constants/scalesData";
 
 interface HistoryItem {
   elementLabel: string;
@@ -43,7 +42,7 @@ interface ExerciseState {
   start: () => void;
   resetStore: () => void;
   onChecked: (correct: boolean) => void;
-    addGuessToHistory: (correct: boolean) => void
+  addGuessToHistory: (correct: boolean) => void;
 }
 
 function getElementClass(category: ExerciseCategory) {
@@ -156,7 +155,7 @@ export const useExerciseStore = create<ExerciseState>((set, get) => ({
     }
 
     const wasGuessCorrect = guessedLabel === state.currentElement.label;
-      state.addGuessToHistory(wasGuessCorrect)
+    state.addGuessToHistory(wasGuessCorrect);
   },
 
   onCheck: () => {
@@ -172,26 +171,26 @@ export const useExerciseStore = create<ExerciseState>((set, get) => ({
       return;
     }
 
-      state.addGuessToHistory(correct)
+    state.addGuessToHistory(correct);
     state.onNextRound();
   },
 
-    addGuessToHistory: (correct) => {
-      const state = get()
-        if(!state.currentElement?.label) return state
-        const guessedLabel = state.currentElement.label;
-      set({
-          guessedCorrectly: correct,
-          history: [
-              ...state.history,
-              {
-                  elementLabel: state.currentElement.label,
-                  wasGuessCorrect: correct,
-                  guessedLabel,
-              },
-          ],
-      })
-    },
+  addGuessToHistory: (correct) => {
+    const state = get();
+    if (!state.currentElement?.label) return state;
+    const guessedLabel = state.currentElement.label;
+    set({
+      guessedCorrectly: correct,
+      history: [
+        ...state.history,
+        {
+          elementLabel: state.currentElement.label,
+          wasGuessCorrect: correct,
+          guessedLabel,
+        },
+      ],
+    });
+  },
 
   setEndSessionDialogIsOpen: (endSessionDialogIsOpen) =>
     set({ endSessionDialogIsOpen }),
