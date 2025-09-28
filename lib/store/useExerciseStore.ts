@@ -4,6 +4,7 @@ import type {
   ExerciseCategory,
   ExerciseType,
   MusicElement,
+  MusicElementClass,
   SessionStatus,
 } from "@/app/types";
 import { CHORDS_DATA } from "@/lib/constants/chordsData";
@@ -29,7 +30,7 @@ interface ExerciseState {
 
   answerOptions: ElementData[];
   selectedLabels: string[];
-  ElementClass: any;
+  ElementClass: MusicElementClass<MusicElement> | null;
   status: SessionStatus;
 
   initStore: (category: ExerciseCategory, exercise: ExerciseType) => void;
@@ -80,7 +81,7 @@ export const useExerciseStore = create<ExerciseState>((set, get) => ({
   endSessionDialogIsOpen: false,
   answerOptions: [],
   selectedLabels: [],
-  ElementClass: undefined,
+  ElementClass: null,
   status: "loading",
   initStore: (category, exercise) => {
     const answerOptions = getElementOptions(category);

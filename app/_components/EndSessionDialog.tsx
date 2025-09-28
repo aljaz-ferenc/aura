@@ -1,6 +1,5 @@
 import { Pause } from "lucide-react";
 import Link from "next/link";
-import type { Dispatch, SetStateAction } from "react";
 import { buttonVariants } from "@/components/ui/button";
 import {
   Dialog,

@@ -14,7 +14,10 @@ import { Scale } from "@/lib/engine/Scale";
 import { useExerciseStore } from "@/lib/store/useExerciseStore";
 import { cn } from "@/lib/utils/cn";
 
-const headerText: Record<ExerciseCategory, any> = {
+const headerText: Record<
+  ExerciseCategory,
+  { title: string; instructions: string }
+> = {
   intervals: {
     title: "Identify the INTERVAL",
     instructions:

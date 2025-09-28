@@ -1,6 +1,6 @@
-import { sampler } from "@/lib/chordSmith";
+import { SCALES_DATA, type ScaleSymbol } from "@/lib/constants/scalesData";
 import { Note } from "@/lib/engine/Note";
-import {SCALES_DATA, ScaleSymbol} from "@/lib/constants/scalesData";
+import { sampler } from "@/lib/engine/Sampler";
 
 export class Scale {
   notes: Note[];
@@ -17,11 +17,13 @@ export class Scale {
   }
 
   static from(rootNote: Note, scaleSymbol: ScaleSymbol) {
-    const schema = SCALES_DATA.find(option => scaleSymbol === option.symbol)?.schema
+    const schema = SCALES_DATA.find(
+      (option) => scaleSymbol === option.symbol,
+    )?.schema;
 
-      if(!schema){
-          throw new Error(`Schema for scale symbol ${scaleSymbol} not found.`)
-      }
+    if (!schema) {
+      throw new Error(`Schema for scale symbol ${scaleSymbol} not found.`);
+    }
 
     const notes = [rootNote];
     let currentNote = rootNote;
@@ -35,7 +37,7 @@ export class Scale {
 
   static random(scaleSymbols: ScaleSymbol[]) {
     const randomSymbol =
-        scaleSymbols[Math.floor(Math.random() * scaleSymbols.length)];
+      scaleSymbols[Math.floor(Math.random() * scaleSymbols.length)];
     const randomScale = Scale.from(Note.random(), randomSymbol as ScaleSymbol);
 
     return {

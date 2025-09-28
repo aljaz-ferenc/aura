@@ -10,12 +10,14 @@ import InterfaceLayout from "@/app/_components/layouts/InterfaceLayout";
 import { NotationRenderer } from "@/app/_components/NotationRenderer";
 import type { ExerciseCategory, ExerciseType } from "@/app/types";
 import { Interval } from "@/lib/engine/Interval";
-import { Note } from "@/lib/engine/Note";
 import { Scale } from "@/lib/engine/Scale";
 import { useExerciseStore } from "@/lib/store/useExerciseStore";
 import { cn } from "@/lib/utils/cn";
 
-const headerText: Record<ExerciseCategory, any> = {
+const headerText: Record<
+  ExerciseCategory,
+  { title: string; instructions: string }
+> = {
   intervals: {
     title: "Sing the INTERVAL",
     instructions:
@@ -42,8 +44,9 @@ export default function SingingInterface() {
   const searchParams = useSearchParams();
   const category = searchParams.get("category");
   const exercise = searchParams.get("exercise");
-  const { guessedCorrectly, currentElement, initStore, status, resetStore } =
-    useExerciseStore(useShallow((state) => state));
+  const { currentElement, initStore, status, resetStore } = useExerciseStore(
+    useShallow((state) => state),
+  );
 
   useEffect(() => {
     if (!category || !exercise) return;
@@ -75,7 +78,7 @@ export default function SingingInterface() {
               ? new Interval([currentElement.element.notes[0]])
               : currentElement.element
           }
-          show={status !== 'ready'}
+          show={status !== "ready"}
           className={cn(["bg-white rounded-md"])}
         />
       )}

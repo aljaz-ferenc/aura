@@ -1,6 +1,6 @@
-import { sampler } from "@/lib/chordSmith";
+import { CHORDS_DATA, type ChordSymbol } from "@/lib/constants/chordsData";
 import { Note } from "@/lib/engine/Note";
-import {CHORDS_DATA, ChordSymbol} from "@/lib/constants/chordsData";
+import { sampler } from "@/lib/engine/Sampler";
 
 export class Chord {
   notes: Note[];
@@ -43,7 +43,7 @@ export class Chord {
 
   public static random(availableSymbols: ChordSymbol[]) {
     const randomSymbol =
-        availableSymbols[Math.floor(Math.random() * availableSymbols.length)];
+      availableSymbols[Math.floor(Math.random() * availableSymbols.length)];
 
     const randomChord = Chord.from(Note.random(), randomSymbol);
 

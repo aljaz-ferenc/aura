@@ -1,4 +1,4 @@
-import { sampler } from "@/lib/chordSmith";
+import { sampler } from "@/lib/engine/Sampler";
 import { Note } from "@/lib/engine/Note";
 
 export class Interval {
@@ -24,7 +24,7 @@ export class Interval {
 
   public static random(intervalSymbols: string[]) {
     const randomSymbol =
-        intervalSymbols[Math.floor(Math.random() * intervalSymbols.length)];
+      intervalSymbols[Math.floor(Math.random() * intervalSymbols.length)];
 
     const match = randomSymbol.match(/^([A]+|[d]+|P|M|m)(\d+)$/);
     if (!match)

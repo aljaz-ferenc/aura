@@ -1,4 +1,4 @@
-import { sampler } from "@/lib/chordSmith";
+import { sampler } from "@/lib/engine/Sampler";
 
 export type Accidentals = { sharps: number; flats: number };
 
@@ -53,7 +53,7 @@ export class Note {
     if (!match) throw new Error(`Invalid interval: ${intervalLabel}`);
 
     const [, quality, numberStr] = match;
-    const number = parseInt(numberStr);
+    const number = Number(numberStr);
 
     const majorScale = Note.MAJOR_SCALES[this.base];
     if (!majorScale) throw new Error(`Invalid base note: ${this.base}`);
@@ -117,11 +117,11 @@ export class Note {
     semitoneAdjustment: number,
   ): string {
     // Remove existing accidentals from the scale note and apply adjustment
-    const baseNote = targetNoteBase.replace(/[#b]/, "");
-    const baseSemitones =
-      Note.MAJOR_SCALE_SEMITONES[
-        ["C", "D", "E", "F", "G", "A", "B"].indexOf(baseNote)
-      ];
+    // const baseNote = targetNoteBase.replace(/[#b]/, "");
+    // const baseSemitones =
+    //   Note.MAJOR_SCALE_SEMITONES[
+    //     ["C", "D", "E", "F", "G", "A", "B"].indexOf(baseNote)
+    //   ];
 
     // Count existing accidentals in the scale note
     const existingSharps =
