@@ -5,7 +5,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useExerciseStore } from "@/lib/store/useExerciseStore";
 import { cn } from "@/lib/utils/cn";
 import {useMemo} from "react";
-import {ElementData} from "@/app/types";
 
 
 export default function InterfaceAnswerOptions() {
@@ -20,14 +19,7 @@ export default function InterfaceAnswerOptions() {
 
     const groups = useMemo(() => {
         if (!answerOptions || answerOptions.length === 0) return [];
-        const grouped = Object.groupBy(answerOptions, (option) => option.category);
-
-        // Convert to a more console-friendly format for logging
-        console.log('Groups:', Object.fromEntries(
-            Object.entries(grouped).map(([key, value]) => [String(key), value])
-        ));
-
-        return grouped;
+        return Object.groupBy(answerOptions, (option) => option.category);
     }, [answerOptions]);
 
   return (

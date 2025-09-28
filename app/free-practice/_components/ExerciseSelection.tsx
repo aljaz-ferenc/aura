@@ -10,7 +10,7 @@ type ExerciseSlectionProps = {
 
 export default function ExerciseSelection({ category }: ExerciseSlectionProps) {
   return (
-    <Card className="border-none">
+    <Card className="border-none py-4">
       <CardContent>
         <h3 className="text-xl font-bold">{category.title}</h3>
         <p className="text-muted-foreground text-sm">
