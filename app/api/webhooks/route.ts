@@ -1,5 +1,6 @@
 import { verifyWebhook } from "@clerk/nextjs/webhooks";
 import type { NextRequest } from "next/server";
+import connectDB from "@/lib/db/db";
 import { User } from "@/lib/db/models/User.model";
 
 export async function POST(req: NextRequest) {
@@ -21,6 +22,7 @@ export async function POST(req: NextRequest) {
       };
 
       try {
+        await connectDB();
         await User.create(userData);
       } catch (dbError) {
         console.error("Database error creating user:", dbError);
