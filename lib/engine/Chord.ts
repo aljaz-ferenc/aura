@@ -1,4 +1,4 @@
-import { CHORDS_DATA, type ChordSymbol } from "@/lib/constants/chordsData";
+import { type ChordSymbol, chordLibrary } from "@/lib/constants/chordsData";
 import { Note } from "@/lib/engine/Note";
 import { sampler } from "@/lib/engine/Sampler";
 
@@ -23,7 +23,7 @@ export class Chord {
   }
 
   public static from(rootNote: Note, chordSymbol: ChordSymbol): Chord {
-    const schema = CHORDS_DATA.find(
+    const schema = chordLibrary.find(
       (option) => option.symbol === chordSymbol,
     )?.schema;
 

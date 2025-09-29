@@ -1,80 +1,128 @@
 import type { ScaleData } from "@/app/types";
 
-export const SCALES_DATA: ScaleData[] = [
+export const scaleLibrary: ScaleData[] = [
   // ===== MAJOR SCALES & MODES =====
   {
     symbol: "major",
-    fullName: "Major Scale (Ionian)",
-    category: "major",
+    fullName: "Major (Ionian)",
+    category: "modes",
     type: "diatonic",
     schema: ["M2", "M2", "m2", "M2", "M2", "M2", "m2"],
+    intervalsFromRoot: ["P1", "M2", "M3", "P4", "P5", "M6", "M7", "P8"],
+    degrees: [1, 2, 3, 4, 5, 6, 7, 8],
   },
   {
     symbol: "dorian",
-    fullName: "Dorian Mode",
-    category: "major",
+    fullName: "Dorian",
+    category: "modes",
     type: "diatonic",
     schema: ["M2", "m2", "M2", "M2", "M2", "m2", "M2"],
+    intervalsFromRoot: ["P1", "M2", "m3", "P4", "P5", "M6", "m7", "P8"],
+    degrees: [1, 2, 3, 4, 5, 6, 7, 8],
   },
   {
     symbol: "phrygian",
-    fullName: "Phrygian Mode",
-    category: "major",
+    fullName: "Phrygian",
+    category: "modes",
     type: "diatonic",
     schema: ["m2", "M2", "M2", "M2", "m2", "M2", "M2"],
+    intervalsFromRoot: ["P1", "m2", "m3", "P4", "P5", "m6", "m7", "P8"],
+    degrees: [1, 2, 3, 4, 5, 6, 7, 8],
   },
   {
     symbol: "lydian",
-    fullName: "Lydian Mode",
-    category: "major",
+    fullName: "Lydian",
+    category: "modes",
     type: "diatonic",
     schema: ["M2", "M2", "M2", "m2", "M2", "M2", "m2"],
+    intervalsFromRoot: ["P1", "M2", "M3", "A4", "P5", "M6", "M7", "P8"],
+    degrees: [1, 2, 3, 4, 5, 6, 7, 8],
   },
   {
     symbol: "mixolydian",
-    fullName: "Mixolydian Mode",
-    category: "major",
+    fullName: "Mixolydian",
+    category: "modes",
     type: "diatonic",
     schema: ["M2", "M2", "m2", "M2", "M2", "m2", "M2"],
+    intervalsFromRoot: ["P1", "M2", "M3", "P4", "P5", "M6", "m7", "P8"],
+    degrees: [1, 2, 3, 4, 5, 6, 7, 8],
   },
   {
-    symbol: "minor",
+    symbol: "aeolian",
     fullName: "Natural Minor (Aeolian)",
-    category: "minor",
+    category: "modes",
     type: "diatonic",
     schema: ["M2", "m2", "M2", "M2", "m2", "M2", "M2"],
+    intervalsFromRoot: ["P1", "M2", "m3", "P4", "P5", "m6", "m7", "P8"],
+    degrees: [1, 2, 3, 4, 5, 6, 7, 8],
   },
   {
     symbol: "locrian",
-    fullName: "Locrian Mode",
-    category: "diminished",
+    fullName: "Locrian",
+    category: "modes",
     type: "diatonic",
     schema: ["m2", "M2", "M2", "m2", "M2", "M2", "M2"],
+    intervalsFromRoot: ["P1", "m2", "m3", "P4", "d5", "m6", "m7", "P8"],
+    degrees: [1, 2, 3, 4, 5, 6, 7, 8],
   },
 
-  // ===== MINOR SCALE VARIATIONS =====
+  // ===== MINOR SCALES =====
   {
     symbol: "harmonic minor",
     fullName: "Harmonic Minor",
     category: "minor",
     type: "harmonic",
     schema: ["M2", "m2", "M2", "M2", "m2", "A2", "m2"],
+    intervalsFromRoot: ["P1", "M2", "m3", "P4", "P5", "m6", "M7", "P8"],
+    degrees: [1, 2, 3, 4, 5, 6, 7, 8],
   },
   {
     symbol: "melodic minor",
-    fullName: "Melodic Minor (Ascending)",
+    fullName: "Melodic Minor",
     category: "minor",
     type: "melodic",
     schema: ["M2", "m2", "M2", "M2", "M2", "M2", "m2"],
-  },
-  {
-    symbol: "dorian ♯11",
-    fullName: "Dorian ♯11 (Melodic Minor 2nd mode)",
-    category: "minor",
-    type: "jazz",
-    schema: ["M2", "m2", "M2", "A2", "m2", "M2", "m2"],
+    intervalsFromRoot: ["P1", "M2", "m3", "P4", "P5", "M6", "M7", "P8"],
+    degrees: [1, 2, 3, 4, 5, 6, 7, 8],
   },
 
+  // ===== SYMMETRIC SCALES =====
+  {
+    symbol: "whole tone",
+    fullName: "Whole Tone",
+    category: "symmetric",
+    type: "symmetric",
+    schema: ["M2", "M2", "M2", "M2", "M2", "M2"],
+    intervalsFromRoot: ["P1", "M2", "M3", "A4", "A5", "A6", "P8"],
+    degrees: [1, 2, 3, 4, 5, 6, 8],
+  },
+  {
+    symbol: "diminished",
+    fullName: "Diminished (Whole-Half)",
+    category: "symmetric",
+    type: "symmetric",
+    schema: ["M2", "m2", "M2", "m2", "M2", "m2", "M2", "m2"],
+    intervalsFromRoot: ["P1", "M2", "m3", "M3", "A4", "P5", "M6", "m7", "P8"],
+    degrees: [1, 2, 3, 4, 5, 6, 7, 8, 9],
+  },
+  {
+    symbol: "dominant diminished",
+    fullName: "Dominant Diminished (Half-Whole)",
+    category: "symmetric",
+    type: "symmetric",
+    schema: ["m2", "M2", "m2", "M2", "m2", "M2", "m2", "M2"],
+    intervalsFromRoot: ["P1", "m2", "m3", "M3", "P4", "A4", "M6", "m7", "P8"],
+    degrees: [1, 2, 3, 4, 5, 6, 7, 8, 9],
+  },
+  {
+    symbol: "augmented",
+    fullName: "Augmented",
+    category: "symmetric",
+    type: "symmetric",
+    schema: ["m3", "m2", "m3", "m2", "m3", "m2"],
+    intervalsFromRoot: ["P1", "m3", "M3", "P5", "m6", "M7", "P8"],
+    degrees: [1, 3, 3, 5, 6, 7, 8],
+  },
   // ===== PENTATONIC SCALES =====
   {
     symbol: "major pentatonic",
@@ -82,6 +130,8 @@ export const SCALES_DATA: ScaleData[] = [
     category: "pentatonic",
     type: "pentatonic",
     schema: ["M2", "M2", "m3", "M2", "m3"],
+    intervalsFromRoot: ["P1", "M2", "M3", "P5", "M6", "P8"],
+    degrees: [1, 2, 3, 5, 6, 8],
   },
   {
     symbol: "minor pentatonic",
@@ -89,144 +139,28 @@ export const SCALES_DATA: ScaleData[] = [
     category: "pentatonic",
     type: "pentatonic",
     schema: ["m3", "M2", "M2", "m3", "M2"],
-  },
-  {
-    symbol: "blues",
-    fullName: "Blues Scale",
-    category: "pentatonic",
-    type: "blues",
-    schema: ["m3", "M2", "m2", "m2", "m3", "M2"],
-  },
-
-  // ===== JAZZ & MODERN SCALES =====
-  {
-    symbol: "whole tone",
-    fullName: "Whole Tone Scale",
-    category: "symmetric",
-    type: "whole-tone",
-    schema: ["M2", "M2", "M2", "M2", "M2", "M2"],
-  },
-  {
-    symbol: "diminished",
-    fullName: "Diminished Scale (Whole-Half)",
-    category: "symmetric",
-    type: "diminished",
-    schema: ["M2", "m2", "M2", "m2", "M2", "m2", "M2", "m2"],
-  },
-  {
-    symbol: "octatonic",
-    fullName: "Octatonic Scale (Half-Whole)",
-    category: "symmetric",
-    type: "diminished",
-    schema: ["m2", "M2", "m2", "M2", "m2", "M2", "m2", "M2"],
-  },
-
-  // ===== WORLD & ETHNIC SCALES =====
-  {
-    symbol: "harmonic major",
-    fullName: "Harmonic Major",
-    category: "major",
-    type: "world",
-    schema: ["M2", "M2", "m2", "M2", "m2", "A2", "m2"],
-  },
-  {
-    symbol: "double harmonic",
-    fullName: "Double Harmonic Major",
-    category: "world",
-    type: "byzantine",
-    schema: ["m2", "A2", "m2", "M2", "m2", "A2", "m2"],
-  },
-  {
-    symbol: "hungarian minor",
-    fullName: "Hungarian Minor",
-    category: "minor",
-    type: "world",
-    schema: ["M2", "m2", "A2", "m2", "m2", "A2", "m2"],
-  },
-  {
-    symbol: "phrygian dominant",
-    fullName: "Phrygian Dominant",
-    category: "world",
-    type: "harmonic",
-    schema: ["m2", "A2", "m2", "M2", "m2", "M2", "M2"],
-  },
-
-  // ===== BEBOP SCALES =====
-  {
-    symbol: "bebop dominant",
-    fullName: "Bebop Dominant Scale",
-    category: "jazz",
-    type: "bebop",
-    schema: ["M2", "M2", "m2", "M2", "M2", "m2", "m2", "M2"],
-  },
-  {
-    symbol: "bebop major",
-    fullName: "Bebop Major Scale",
-    category: "jazz",
-    type: "bebop",
-    schema: ["M2", "M2", "m2", "M2", "m2", "m2", "M2", "M2"],
-  },
-
-  // ===== EXOTIC SCALES =====
-  {
-    symbol: "enigmatic",
-    fullName: "Enigmatic Scale",
-    category: "exotic",
-    type: "exotic",
-    schema: ["m2", "A2", "A2", "M2", "M2", "M2", "m2"],
-  },
-  {
-    symbol: "neapolitan major",
-    fullName: "Neapolitan Major",
-    category: "major",
-    type: "exotic",
-    schema: ["m2", "M2", "M2", "M2", "M2", "M2", "m2"],
-  },
-  {
-    symbol: "neapolitan minor",
-    fullName: "Neapolitan Minor",
-    category: "minor",
-    type: "exotic",
-    schema: ["m2", "M2", "M2", "M2", "m2", "A2", "m2"],
+    intervalsFromRoot: ["P1", "m3", "P4", "P5", "m7", "P8"],
+    degrees: [1, 3, 4, 5, 7, 8],
   },
 ] as const;
 
 export type ScaleSymbol =
-  // Major Scales & Modes
+  // Modes category
   | "major"
   | "dorian"
   | "phrygian"
   | "lydian"
   | "mixolydian"
-  | "minor"
+  | "aeolian"
   | "locrian"
-
-  // Minor Scale Variations
+  // Minor category
   | "harmonic minor"
   | "melodic minor"
-  | "dorian ♯11"
-
-  // Pentatonic Scales
-  | "major pentatonic"
-  | "minor pentatonic"
-  | "blues"
-
-  // Jazz & Modern Scales
+  // Symmetric category
   | "whole tone"
   | "diminished"
-  | "octatonic"
-
-  // World & Ethnic Scales
-  | "harmonic major"
-  | "double harmonic"
-  | "hungarian minor"
-  | "phrygian dominant"
-
-  // Bebop Scales
-  | "bebop dominant"
-  | "bebop major"
-
-  // Exotic Scales
-  | "enigmatic"
-  | "neapolitan major"
-  | "neapolitan minor";
+  | "dominant diminished"
+  | "augmented"
+  // Pentatonic category
+  | "major pentatonic"
+  | "minor pentatonic";

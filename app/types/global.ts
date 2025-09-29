@@ -30,6 +30,8 @@ type ElementBase = {
   symbol: string;
   fullName: string;
   category: string;
+  intervalsFromRoot: string[];
+  degrees: number[];
 };
 
 export type IntervalData = {} & ElementBase;

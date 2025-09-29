@@ -38,7 +38,7 @@ export default function InterfaceAnswerOptions() {
                     key={option.symbol}
                     type="button"
                     className={cn([
-                      "cursor-pointer group w-3xs",
+                      "cursor-pointer group w-2xs",
                       category === "scales" && "capitalize",
                     ])}
                     onClick={() => onGuess(option.symbol)}
@@ -64,16 +64,15 @@ export default function InterfaceAnswerOptions() {
                     >
                       <CardContent className=" border-none flex flex-col">
                         <span>
-                          {category === "chords" ? (
+                          {category === "chords" && (
                             <ChordDisplay symbol={option.symbol} />
-                          ) : (
-                            option.symbol
                           )}
                         </span>
-                        {category !== "scales" && category !== "chords" && (
-                          <span className="text-xs text-muted-foreground font-normal lowercase">
-                            {option.fullName}
-                          </span>
+                        {category === "intervals" && (
+                          <span>{option.symbol}</span>
+                        )}
+                        {category === "scales" && (
+                          <span className="">{option.fullName}</span>
                         )}
                       </CardContent>
                     </Card>

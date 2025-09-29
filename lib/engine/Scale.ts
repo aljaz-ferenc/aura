@@ -1,4 +1,4 @@
-import { SCALES_DATA, type ScaleSymbol } from "@/lib/constants/scalesData";
+import { type ScaleSymbol, scaleLibrary } from "@/lib/constants/scalesData";
 import { Note } from "@/lib/engine/Note";
 import { sampler } from "@/lib/engine/Sampler";
 
@@ -17,7 +17,7 @@ export class Scale {
   }
 
   static from(rootNote: Note, scaleSymbol: ScaleSymbol) {
-    const schema = SCALES_DATA.find(
+    const schema = scaleLibrary.find(
       (option) => scaleSymbol === option.symbol,
     )?.schema;
 

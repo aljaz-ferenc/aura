@@ -10,9 +10,9 @@ import {
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { CHORDS_DATA } from "@/lib/constants/chordsData";
+import { chordLibrary } from "@/lib/constants/chordsData";
 import { INTERVALS_DATA } from "@/lib/constants/intervalsData";
-import { SCALES_DATA } from "@/lib/constants/scalesData";
+import { scaleLibrary } from "@/lib/constants/scalesData";
 import { cn } from "@/lib/utils/cn";
 
 function getElementOptions(category: ExerciseCategory) {
@@ -20,9 +20,9 @@ function getElementOptions(category: ExerciseCategory) {
     case "intervals":
       return INTERVALS_DATA;
     case "chords":
-      return CHORDS_DATA;
+      return chordLibrary;
     case "scales":
-      return SCALES_DATA;
+      return scaleLibrary;
     default:
       return INTERVALS_DATA;
   }

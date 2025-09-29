@@ -7,9 +7,9 @@ import type {
   MusicElementClass,
   SessionStatus,
 } from "@/app/types";
-import { CHORDS_DATA } from "@/lib/constants/chordsData";
+import { chordLibrary } from "@/lib/constants/chordsData";
 import { INTERVALS_DATA } from "@/lib/constants/intervalsData";
-import { SCALES_DATA } from "@/lib/constants/scalesData";
+import { scaleLibrary } from "@/lib/constants/scalesData";
 import { Chord } from "@/lib/engine/Chord";
 import { Interval } from "@/lib/engine/Interval";
 import { Scale } from "@/lib/engine/Scale";
@@ -64,9 +64,9 @@ function getElementOptions(category: ExerciseCategory) {
     case "intervals":
       return INTERVALS_DATA;
     case "chords":
-      return CHORDS_DATA;
+      return chordLibrary;
     case "scales":
-      return SCALES_DATA;
+      return scaleLibrary;
     default:
       return INTERVALS_DATA;
   }

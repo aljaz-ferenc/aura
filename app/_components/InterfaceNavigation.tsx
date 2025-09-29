@@ -43,9 +43,19 @@ export default function InterfaceNavigation() {
 
   return (
     <div className="flex flex-col justify-center gap-3 items-center">
+      {exercise === "singing" && (
+        <span
+          className={cn([
+            "text-4xl font-bold mt-12 mb-10 invisible text-primary",
+            (status === "playing" || status === "checking") && "visible",
+          ])}
+        >
+          {exercise === "singing" && currentElement?.label}
+        </span>
+      )}
       {(status === "ready" || status === "loading") && (
         <Button
-          className="rounded-full !px-14 py-8 text-lg font-bold cursor-pointer flex gap-2 mt-10 hover:bg-green-500/80 mx-0 bg-green-500"
+          className="rounded-full !px-14 py-8 text-lg font-bold cursor-pointer flex gap-2  hover:bg-green-500/80 mx-0 bg-green-500"
           onClick={start}
           disabled={status === "loading"}
         >
@@ -53,7 +63,7 @@ export default function InterfaceNavigation() {
         </Button>
       )}
       {status === "playing" && exercise !== "singing" && (
-        <div className="w-full text-center relative flex items-center justify-center mt-10">
+        <div className="w-full text-center relative flex items-center justify-center">
           <Button
             className="rounded-full !px-14 py-8 text-lg font-bold cursor-pointer flex gap-2 mx-0"
             onClick={onNextRound}
@@ -75,7 +85,7 @@ export default function InterfaceNavigation() {
       )}
 
       {status === "playing" && exercise === "singing" && (
-        <div className="w-full text-center relative flex items-center justify-center mt-10">
+        <div className="w-full text-center relative flex items-center justify-center ">
           <Button
             className="rounded-full !px-14 py-8 text-lg font-bold cursor-pointer flex gap-2 mx-0"
             onClick={onCheck}
@@ -98,7 +108,7 @@ export default function InterfaceNavigation() {
       )}
 
       {status === "checking" && (
-        <div className="w-full text-center relative flex items-center justify-center mt-10 gap-3">
+        <div className="w-full text-center relative flex items-center justify-center  gap-3">
           <Button
             className="rounded-full !px-14 py-8 text-lg font-bold cursor-pointer flex gap-2 mx-0"
             onClick={() => onChecked(true)}
@@ -136,7 +146,6 @@ export default function InterfaceNavigation() {
           ? buttonsText[category as ExerciseCategory]?.repeat || ""
           : "Repeat first note"}
       </Button>
-      {exercise === "singing" && currentElement?.label}
     </div>
   );
 }

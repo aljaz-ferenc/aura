@@ -20,23 +20,19 @@ const headerText: Record<
 > = {
   intervals: {
     title: "Sing the INTERVAL",
-    instructions:
-      "Listen to the first note and sing the correct interval. Click Check to hear the answer.",
+    instructions: "Listen to the first note and sing the correct interval.",
   },
   chords: {
     title: "Sing the CHORD",
-    instructions:
-      "Listen to the first note and sing the correct chord. Click Check to hear the answer.",
+    instructions: "Listen to the first note and sing the correct chord.",
   },
   scales: {
     title: "Sing the SCALE",
-    instructions:
-      "Listen to the first note and sing the correct scale. Click Check to hear the answer.",
+    instructions: "Listen to the first note and sing the correct scale.",
   },
   rhythm: {
     title: "Sing the RHYTHM",
-    instructions:
-      "Listen to the first note and sing the correct rhythm. Click Check to hear the answer.",
+    instructions: "Listen to the first note and sing the correct rhythm.",
   },
 };
 
