@@ -114,7 +114,7 @@ export const useExerciseStore = create<ExerciseState>((set, get) => ({
     try {
       const currentElement =
         state.ElementClass === Chord
-          ? Chord.random(state.selectedLabels as ChordSymbol[]) //add inversion from user settings
+          ? Chord.random(state.selectedLabels as ChordSymbol[]) // TODO: add inversion from user settings
           : state.ElementClass.random(state.selectedLabels);
       const getNextStatus = () => {
         if (state.status === "loading") {
