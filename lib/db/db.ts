@@ -1,10 +1,10 @@
 import mongoose from "mongoose";
 import { env } from "@/lib/env/env";
 
-const MONGO_URI = env.MONGO_URI;
+const MONGODB_URI = env.MONGODB_URI;
 
-if (!MONGO_URI) {
-  throw new Error("Please define the MONGO_URI environment variable");
+if (!MONGODB_URI) {
+  throw new Error("Please define the MONGODB_URI environment variable");
 }
 
 interface MongooseCache {
@@ -35,7 +35,7 @@ async function connectDB(): Promise<typeof mongoose> {
       bufferCommands: false,
     };
 
-    cached.promise = mongoose.connect(MONGO_URI, opts);
+    cached.promise = mongoose.connect(MONGODB_URI, opts);
   }
 
   try {
