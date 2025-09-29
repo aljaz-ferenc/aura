@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Source_Sans_3 } from "next/font/google";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
+import type { ReactNode } from "react";
 import Header from "@/app/_components/Header";
 
 const geistSans = Geist({
@@ -14,36 +15,20 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-// const inter = Inter({
-//   variable: "--font-inter",
-//   subsets: ["latin"],
-// });
-
 const sourceSans = Source_Sans_3({
   variable: "--font-source-sans",
   subsets: ["latin"],
 });
 
-// const lato = Lato({
-//     variable: "--font-lato",
-//     subsets: ["latin"],
-//     weight: '400'
-// });
-// const c = Crimson_Text({
-//     variable: "--font-lato",
-//     subsets: ["latin"],
-//     weight: '400'
-// });
-
 export const metadata: Metadata = {
   title: "Aura",
-  description: "Decoding Music's DNA", //Listen. Understand. Master.
+  description: "Decoding Music's DNA",
 };
 
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: ReactNode;
 }>) {
   return (
     <ClerkProvider>

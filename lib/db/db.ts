@@ -1,37 +1,51 @@
-import { MongoClient, ServerApiVersion } from "mongodb";
+import mongoose from "mongoose";
 import { env } from "@/lib/env/env";
 
-const client = new MongoClient(env.MONGO_URI, {
-  serverApi: {
-    version: ServerApiVersion.v1,
-    strict: true,
-    deprecationErrors: true,
-  },
-});
+const MONGO_URI = env.MONGO_URI;
 
-export async function pingDB() {
-  try {
-    await client.connect();
-    await client.db("aura").command({ ping: 1 });
-  } catch (err) {
-    console.error(err);
-  } finally {
-    await client.close();
+if (!MONGO_URI) {
+  throw new Error("Please define the MONGO_URI environment variable");
+}
+
+interface MongooseCache {
+  conn: typeof mongoose | null;
+  promise: Promise<typeof mongoose> | null;
+}
+
+const globalWithMongoose = global as typeof globalThis & {
+  mongoose?: MongooseCache;
+};
+
+const cached: MongooseCache = globalWithMongoose.mongoose || {
+  conn: null,
+  promise: null,
+};
+
+if (!globalWithMongoose.mongoose) {
+  globalWithMongoose.mongoose = cached;
+}
+
+async function connectDB(): Promise<typeof mongoose> {
+  if (cached.conn) {
+    return cached.conn;
   }
-}
 
-async function getDB(dbName: string) {
-  try {
-    await client.connect();
-    return client.db(dbName);
-  } catch (err) {
-    console.error(err);
+  if (!cached.promise) {
+    const opts = {
+      bufferCommands: false,
+    };
+
+    cached.promise = mongoose.connect(MONGO_URI, opts);
   }
+
+  try {
+    cached.conn = await cached.promise;
+  } catch (error) {
+    cached.promise = null;
+    throw error;
+  }
+
+  return cached.conn;
 }
 
-export async function getCollection(collectionName: string) {
-  const db = await getDB("aura");
-  if (db) return db.collection(collectionName);
-
-  return null;
-}
+export default connectDB;
