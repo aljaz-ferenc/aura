@@ -45,7 +45,7 @@ export default function HomePage() {
             "rounded-full px-10 py-7 text-lg font-bold cursor-pointer",
           ])}
         >
-          Free
+          Free Practice
         </Link>
         <Link
           href="/play/test"

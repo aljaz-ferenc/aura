@@ -41,11 +41,26 @@ export class Chord {
     return new Chord(notes);
   }
 
-  public static random(availableSymbols: ChordSymbol[]) {
-    const randomSymbol =
-      availableSymbols[Math.floor(Math.random() * availableSymbols.length)];
+  private static hasTooManyAccidents(scale: Chord) {
+    return scale.notes.some(
+      (n) => n.accidentals.sharps > 2 || n.accidentals.flats > 2,
+    );
+  }
 
-    const randomChord = Chord.from(Note.random(), randomSymbol);
+  public static random(availableSymbols: ChordSymbol[]) {
+    let randomSymbol =
+      availableSymbols[Math.floor(Math.random() * availableSymbols.length)];
+    let randomChord = Chord.from(Note.random(), randomSymbol);
+
+    for (let i = 0; i < 4; i++) {
+      if (!Chord.hasTooManyAccidents(randomChord)) {
+        break;
+      }
+
+      randomSymbol =
+        availableSymbols[Math.floor(Math.random() * availableSymbols.length)];
+      randomChord = Chord.from(Note.random(), randomSymbol);
+    }
 
     return {
       element: randomChord,

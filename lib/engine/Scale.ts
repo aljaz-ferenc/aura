@@ -35,10 +35,26 @@ export class Scale {
     return new Scale(notes);
   }
 
+  private static hasTooManyAccidents(scale: Scale) {
+    return scale.notes.some(
+      (n) => n.accidentals.sharps > 2 || n.accidentals.flats > 2,
+    );
+  }
+
   static random(scaleSymbols: ScaleSymbol[]) {
-    const randomSymbol =
+    let randomSymbol =
       scaleSymbols[Math.floor(Math.random() * scaleSymbols.length)];
-    const randomScale = Scale.from(Note.random(), randomSymbol as ScaleSymbol);
+    let randomScale = Scale.from(Note.random(), randomSymbol as ScaleSymbol);
+
+    for (let i = 0; i < 3; i++) {
+      if (!Scale.hasTooManyAccidents(randomScale)) {
+        break;
+      }
+
+      randomSymbol =
+        scaleSymbols[Math.floor(Math.random() * scaleSymbols.length)];
+      randomScale = Scale.from(Note.random(), randomSymbol as ScaleSymbol);
+    }
 
     return {
       element: randomScale,
