@@ -7,7 +7,7 @@ import type {
   MusicElementClass,
   SessionStatus,
 } from "@/app/types";
-import { chordLibrary } from "@/lib/constants/chordsData";
+import { type ChordSymbol, chordLibrary } from "@/lib/constants/chordsData";
 import { INTERVALS_DATA } from "@/lib/constants/intervalsData";
 import { scaleLibrary } from "@/lib/constants/scalesData";
 import { Chord } from "@/lib/engine/Chord";
@@ -112,7 +112,10 @@ export const useExerciseStore = create<ExerciseState>((set, get) => ({
     }
 
     try {
-      const currentElement = state.ElementClass.random(state.selectedLabels);
+      const currentElement =
+        state.ElementClass === Chord
+          ? Chord.random(state.selectedLabels as ChordSymbol[]) //add inversion from user settings
+          : state.ElementClass.random(state.selectedLabels);
       const getNextStatus = () => {
         if (state.status === "loading") {
           return "ready";

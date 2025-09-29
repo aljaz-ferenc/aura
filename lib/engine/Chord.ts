@@ -22,7 +22,23 @@ export class Chord {
     });
   }
 
-  public static from(rootNote: Note, chordSymbol: ChordSymbol): Chord {
+  private static invert(chord: Chord, inversion: number) {
+    if (inversion > chord.notes.length - 1) {
+      throw new Error(`Inversion too large: ${inversion}.`);
+    }
+    const notes = chord.notes.map((n) => n);
+    const removedNotes = notes.splice(0, inversion);
+    const transposedNotes = removedNotes.map((note) => note.transpose("P8"));
+    notes.push(...transposedNotes);
+
+    return new Chord(notes);
+  }
+
+  public static from(
+    rootNote: Note,
+    chordSymbol: ChordSymbol,
+    options?: { inversion: number },
+  ): Chord {
     const schema = chordLibrary.find(
       (option) => option.symbol === chordSymbol,
     )?.schema;
@@ -38,7 +54,12 @@ export class Chord {
       notes.push(currentNote);
     }
 
-    return new Chord(notes);
+    const chord = new Chord(notes);
+
+    if (options?.inversion) {
+      return Chord.invert(chord, options.inversion);
+    }
+    return chord;
   }
 
   private static hasTooManyAccidents(scale: Chord) {
@@ -47,7 +68,7 @@ export class Chord {
     );
   }
 
-  public static random(availableSymbols: ChordSymbol[]) {
+  public static random(availableSymbols: ChordSymbol[], inversion?: number) {
     let randomSymbol =
       availableSymbols[Math.floor(Math.random() * availableSymbols.length)];
     let randomChord = Chord.from(Note.random(), randomSymbol);
@@ -62,9 +83,14 @@ export class Chord {
       randomChord = Chord.from(Note.random(), randomSymbol);
     }
 
+    if (inversion) {
+      randomChord = Chord.invert(randomChord, inversion);
+    }
+
     return {
       element: randomChord,
       label: randomSymbol,
+      inversion: inversion,
     };
   }
 }

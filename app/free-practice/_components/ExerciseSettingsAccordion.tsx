@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { chordLibrary } from "@/lib/constants/chordsData";
 import { INTERVALS_DATA } from "@/lib/constants/intervalsData";
 import { scaleLibrary } from "@/lib/constants/scalesData";
@@ -152,6 +153,19 @@ export default function ExerciseSettingsAccordion({
                       );
                     })}
                   </div>
+                  {category.slug === "chords" && (
+                    <div className="mt-6">
+                      <p>Inversions: </p>
+                      <ToggleGroup
+                        type="multiple"
+                        onValueChange={(val) => console.log(val)}
+                      >
+                        <ToggleGroupItem value={"0"}>Root</ToggleGroupItem>
+                        <ToggleGroupItem value={"1"}>1st</ToggleGroupItem>
+                        <ToggleGroupItem value={"2"}>2nd</ToggleGroupItem>
+                      </ToggleGroup>
+                    </div>
+                  )}
                   <hr className="my-5" />
                 </div>
               );
