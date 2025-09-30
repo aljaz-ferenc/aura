@@ -38,3 +38,37 @@ export async function createUser(userData: Omit<User, "_id">) {
   }
   return;
 }
+
+export async function deleteUser(clerkId: string) {
+  try {
+    const client = await clientPromise;
+    const db = client.db("prod");
+    const deletion = await db.collection("users").deleteOne({ clerkId });
+    if (deletion.deletedCount === 0) {
+      throw new Error("User could not be deleted");
+    }
+    return true;
+  } catch (err) {
+    throw new Error(`Could not delete user with clerkId ${clerkId}: ${err}`);
+  }
+}
+
+export async function updateUser(clerkId: string, updates: Partial<User>) {
+  try {
+    const client = await clientPromise;
+    const db = client.db("prod");
+    const updatedUser = await db
+      .collection<User>("users")
+      .findOneAndUpdate(
+        { clerkId },
+        { $set: updates },
+        { returnDocument: "after", upsert: true },
+      );
+    if (!updatedUser) {
+      throw new Error("User could not be updated");
+    }
+    return updatedUser;
+  } catch (err) {
+    throw new Error(`Could not update user with clerkId ${clerkId}: ${err}`);
+  }
+}
