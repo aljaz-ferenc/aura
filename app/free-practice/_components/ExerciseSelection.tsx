@@ -4,11 +4,13 @@ import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils/cn";
 
-type ExerciseSlectionProps = {
+type ExerciseSelectionProps = {
   category: Category;
 };
 
-export default function ExerciseSelection({ category }: ExerciseSlectionProps) {
+export default function ExerciseSelection({
+  category,
+}: ExerciseSelectionProps) {
   return (
     <Card className="border-none py-4">
       <CardContent>

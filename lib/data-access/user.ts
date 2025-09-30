@@ -22,7 +22,10 @@ export const getCurrentUser = cache(async (): Promise<User> => {
 
     if (!user) throw new Error("User not found");
 
-    return user;
+    return {
+      ...user,
+      _id: user._id.toString(),
+    };
   } catch (err) {
     throw new Error(`Could not get current user: ${err}`);
   }
@@ -67,7 +70,10 @@ export async function updateUser(clerkId: string, updates: Partial<User>) {
     if (!updatedUser) {
       throw new Error("User could not be updated");
     }
-    return updatedUser;
+    return {
+      ...updatedUser,
+      _id: updatedUser._id.toString(),
+    };
   } catch (err) {
     throw new Error(`Could not update user with clerkId ${clerkId}: ${err}`);
   }

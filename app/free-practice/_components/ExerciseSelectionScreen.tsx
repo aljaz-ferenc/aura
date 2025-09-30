@@ -1,20 +1,27 @@
 "use client";
 
 import { useState } from "react";
+import type { User } from "@/app/api/webhooks/types";
 import ExerciseSelection from "@/app/free-practice/_components/ExerciseSelection";
 import ExerciseSettingsAccordion from "@/app/free-practice/_components/ExerciseSettingsAccordion";
-import type { Category } from "@/app/types";
+import type { Category, ExerciseCategory } from "@/app/types";
 import { Card, CardContent } from "@/components/ui/card";
 import { CATEGORIES } from "@/lib/constants/categories";
 import { cn } from "@/lib/utils/cn";
 
-export default function ExerciseSelectionScreen() {
+type ExerciseSelectionScreen = {
+  user: User;
+};
+
+export default function ExerciseSelectionScreen({
+  user,
+}: ExerciseSelectionScreen) {
   const [selectedCategory, setSelectedCategory] = useState<Category>(
     CATEGORIES[0],
   );
 
   return (
-    <main className="container">
+    <main className="">
       <div className=" mx-auto">
         <h2 className=" font-bold text-4xl">Select Exercise</h2>
         <p className="text-lg text-muted-foreground mb-10">
@@ -47,11 +54,13 @@ export default function ExerciseSelectionScreen() {
           </button>
         ))}
       </div>
-
       <ExerciseSelection category={selectedCategory} />
       <Card className="mt-5 p-0">
         <CardContent>
-          <ExerciseSettingsAccordion category={selectedCategory} />
+          <ExerciseSettingsAccordion
+            user={user}
+            category={selectedCategory.slug as ExerciseCategory}
+          />
         </CardContent>
       </Card>
     </main>

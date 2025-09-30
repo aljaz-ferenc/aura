@@ -1,7 +1,10 @@
+"use client";
+
 import { Settings } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useTransition } from "react";
 import { ChordDisplay } from "@/app/_components/ChordDisplay";
-import type { Category, ExerciseCategory } from "@/app/types";
+import type { User } from "@/app/api/webhooks/types";
+import type { ExerciseCategory } from "@/app/types";
 import {
   Accordion,
   AccordionContent,
@@ -12,55 +15,120 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { chordLibrary } from "@/lib/constants/chordsData";
-import { INTERVALS_DATA } from "@/lib/constants/intervalsData";
+import { IntervalLibrary } from "@/lib/constants/intervalsData";
 import { scaleLibrary } from "@/lib/constants/scalesData";
+import { updateUser } from "@/lib/data-access/user";
 import { cn } from "@/lib/utils/cn";
 
 function getElementOptions(category: ExerciseCategory) {
   switch (category) {
     case "intervals":
-      return INTERVALS_DATA;
+      return IntervalLibrary;
     case "chords":
       return chordLibrary;
     case "scales":
       return scaleLibrary;
     default:
-      return INTERVALS_DATA;
+      return IntervalLibrary;
   }
 }
 
 type ExerciseSettingsAccordionProps = {
-  category: Category;
+  user: User;
+  category: ExerciseCategory;
 };
 
 export default function ExerciseSettingsAccordion({
+  user,
   category,
 }: ExerciseSettingsAccordionProps) {
-  const answerOptions = getElementOptions(category.slug as ExerciseCategory);
-  const [selectedElements, setSelectedElements] = useState<Set<string>>(
-    new Set(),
-  );
+  const [isPending, startTransition] = useTransition();
+  const answerOptions = getElementOptions(category);
 
   const groups = useMemo(() => {
     if (!answerOptions || answerOptions.length === 0) return [];
     return Object.groupBy(answerOptions, (option) => option.category);
   }, [answerOptions]);
+  const [selectedIntervals, setSelectedIntervals] = useState(
+    user.settings.intervals.selectedIntervals,
+  );
+  const [selectedChords, setSelectedChords] = useState(
+    user.settings.chords.selectedChords,
+  );
+  const [selectedScales, setSelectedScalest] = useState(
+    user.settings.scales.selectedScales,
+  );
 
-  function onCheckedChange(checked: boolean, symbol: string) {
-    if (checked) {
-      setSelectedElements((prev) => new Set([...prev, symbol]));
-      return;
+  function onDeselectAll(
+    category: ExerciseCategory,
+    symbolsToRemove: string[],
+  ) {
+    switch (category) {
+      case "intervals":
+        setSelectedIntervals((prev) => {
+          const toRemove = new Set(symbolsToRemove);
+          return prev.filter((s) => !toRemove.has(s));
+        });
+        break;
+      case "chords":
+        setSelectedChords((prev) => {
+          const toRemove = new Set(symbolsToRemove);
+          return prev.filter((s) => !toRemove.has(s));
+        });
+        break;
+      case "scales":
+        setSelectedScalest((prev) => {
+          const toRemove = new Set(symbolsToRemove);
+          return prev.filter((s) => !toRemove.has(s));
+        });
     }
-
-    setSelectedElements((prev) => {
-      const newSet = new Set(prev);
-      newSet.delete(symbol);
-      return newSet;
-    });
   }
 
-  function onSave() {
-    console.log(selectedElements);
+  function onSelectAll(category: ExerciseCategory, symbolsToAdd: string[]) {
+    switch (category) {
+      case "intervals":
+        setSelectedIntervals((prev) => [...prev, ...symbolsToAdd]);
+        break;
+      case "chords":
+        setSelectedChords((prev) => [...prev, ...symbolsToAdd]);
+        break;
+      case "scales":
+        setSelectedScalest((prev) => [...prev, ...symbolsToAdd]);
+    }
+  }
+
+  function onCheckedChange(checked: boolean, symbol: string) {
+    switch (category) {
+      case "intervals":
+        setSelectedIntervals((prev) =>
+          checked ? [...prev, symbol] : prev.filter((sym) => sym !== symbol),
+        );
+        break;
+      case "chords":
+        setSelectedChords((prev) =>
+          checked ? [...prev, symbol] : prev.filter((sym) => sym !== symbol),
+        );
+        break;
+      case "scales":
+        setSelectedScalest((prev) =>
+          checked ? [...prev, symbol] : prev.filter((sym) => sym !== symbol),
+        );
+        break;
+    }
+  }
+
+  const getUpdatedSettings = useMemo((): User["settings"] => {
+    const userSettings = { ...user.settings };
+    userSettings.scales.selectedScales = selectedScales;
+    userSettings.chords.selectedChords = selectedChords;
+    userSettings.intervals.selectedIntervals = selectedIntervals;
+    return userSettings;
+  }, [selectedIntervals, selectedChords, selectedScales, user.settings]);
+
+  async function onSave() {
+    startTransition(async () => {
+      await updateUser(user.clerkId, { settings: getUpdatedSettings });
+    });
   }
 
   return (
@@ -71,6 +139,13 @@ export default function ExerciseSettingsAccordion({
           <span className="mr-auto">Settings</span>
         </AccordionTrigger>
         <AccordionContent>
+          <Button
+            onClick={onSave}
+            className="cursor-pointer"
+            disabled={isPending}
+          >
+            {isPending ? "Saving..." : "Save"}
+          </Button>
           {groups &&
             Object.entries(groups).map(([group, options]) => {
               return (
@@ -85,12 +160,12 @@ export default function ExerciseSettingsAccordion({
                           variant="link"
                           className="cursor-pointer"
                           onClick={() =>
-                            setSelectedElements((prev) => {
-                              return new Set([
-                                ...prev,
-                                ...options.map((option) => option.symbol),
-                              ]);
-                            })
+                            onSelectAll(
+                              category,
+                              options
+                                .filter((o) => o.category === group)
+                                .map((o) => o.symbol),
+                            )
                           }
                         >
                           Select all
@@ -98,19 +173,14 @@ export default function ExerciseSettingsAccordion({
                         <Button
                           variant="link"
                           className="cursor-pointer"
-                          onClick={() => {
-                            const symbolsToRemove = new Set(
-                              options.map((o) => o.symbol),
-                            );
-                            setSelectedElements(
-                              (prev) =>
-                                new Set(
-                                  [...prev].filter(
-                                    (s) => !symbolsToRemove.has(s),
-                                  ),
-                                ),
-                            );
-                          }}
+                          onClick={() =>
+                            onDeselectAll(
+                              category,
+                              options
+                                .filter((o) => o.category === group)
+                                .map((o) => o.symbol),
+                            )
+                          }
                         >
                           Deselect all
                         </Button>
@@ -119,18 +189,24 @@ export default function ExerciseSettingsAccordion({
                   </div>
                   <div className="grid grid-cols-4 gap-3">
                     {options?.map((option) => {
-                      const checked = selectedElements.has(option.symbol);
+                      const isChecked =
+                        category === "intervals"
+                          ? selectedIntervals.includes(option.symbol)
+                          : category === "chords"
+                            ? selectedChords.includes(option.symbol)
+                            : selectedScales.includes(option.symbol);
+
                       return (
                         <label
                           htmlFor={option.symbol}
                           key={option.symbol}
                           className={cn([
                             "text-left flex justify-start gap-3 border rounded-md py-2 px-3 items-center bravura-text",
-                            checked && "bg-secondary",
+                            isChecked && "bg-secondary",
                           ])}
                         >
                           <Checkbox
-                            checked={checked}
+                            checked={isChecked}
                             onCheckedChange={(checked) =>
                               onCheckedChange(!!checked, option.symbol)
                             }
@@ -140,10 +216,10 @@ export default function ExerciseSettingsAccordion({
                           <span
                             className={cn([
                               "mr-auto",
-                              category.slug === "scales" && "capitalize",
+                              category === "scales" && "capitalize",
                             ])}
                           >
-                            {category.slug === "chords" ? (
+                            {category === "chords" ? (
                               <ChordDisplay symbol={option.symbol} />
                             ) : (
                               option.symbol
@@ -153,7 +229,7 @@ export default function ExerciseSettingsAccordion({
                       );
                     })}
                   </div>
-                  {category.slug === "chords" && (
+                  {category === "chords" && (
                     <div className="mt-6">
                       <p>Inversions: </p>
                       <ToggleGroup
@@ -170,9 +246,6 @@ export default function ExerciseSettingsAccordion({
                 </div>
               );
             })}
-          <Button onClick={onSave} className="cursor-pointer">
-            Save
-          </Button>
         </AccordionContent>
       </AccordionItem>
     </Accordion>

@@ -8,7 +8,7 @@ import type {
   SessionStatus,
 } from "@/app/types";
 import { type ChordSymbol, chordLibrary } from "@/lib/constants/chordsData";
-import { INTERVALS_DATA } from "@/lib/constants/intervalsData";
+import { IntervalLibrary } from "@/lib/constants/intervalsData";
 import { scaleLibrary } from "@/lib/constants/scalesData";
 import { Chord } from "@/lib/engine/Chord";
 import { Interval } from "@/lib/engine/Interval";
@@ -62,13 +62,13 @@ function getElementClass(category: ExerciseCategory) {
 function getElementOptions(category: ExerciseCategory) {
   switch (category) {
     case "intervals":
-      return INTERVALS_DATA;
+      return IntervalLibrary;
     case "chords":
       return chordLibrary;
     case "scales":
       return scaleLibrary;
     default:
-      return INTERVALS_DATA;
+      return IntervalLibrary;
   }
 }
 

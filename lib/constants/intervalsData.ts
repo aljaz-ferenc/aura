@@ -1,6 +1,6 @@
 import type { IntervalData } from "@/app/types";
 
-export const INTERVALS_DATA: IntervalData[] = [
+export const IntervalLibrary: IntervalData[] = [
   // ===== SIMPLE INTERVALS =====
   {
     symbol: "P1",
