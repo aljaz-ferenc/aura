@@ -1,6 +1,6 @@
 import { verifyWebhook } from "@clerk/nextjs/webhooks";
 import type { NextRequest } from "next/server";
-import { initUserDataSchema } from "@/app/api/webhooks/types";
+import { userSchema } from "@/app/api/webhooks/types";
 import { createUser } from "@/lib/data-access/user";
 
 export async function POST(req: NextRequest) {
@@ -16,16 +16,15 @@ export async function POST(req: NextRequest) {
       const { email_addresses, first_name, image_url, last_name } = evt.data;
       console.log("EVT TYPE: ", evt.type);
 
-      const userData = {
+      const clerkData = {
         clerkId: id,
         firstName: first_name,
         lastName: last_name,
         email: email_addresses[0].email_address,
         avatar: image_url,
       };
-      console.log("USER DATA: ", userData);
 
-      const validation = initUserDataSchema.safeParse(userData);
+      const validation = userSchema.safeParse(clerkData);
 
       if (!validation.success) {
         console.error("Validation failed:", validation.error.message);
