@@ -25,7 +25,7 @@ export const metadata: Metadata = {
   description: "Decoding Music's DNA",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: ReactNode;

@@ -1,3 +1,4 @@
+import { UserButton } from "@clerk/nextjs";
 import Link from "next/link";
 
 const links = [
@@ -14,6 +15,7 @@ export default function Header() {
             {link.label}
           </Link>
         ))}
+        <UserButton />
       </nav>
     </header>
   );

@@ -2,13 +2,18 @@ import { Flame, GraduationCap } from "lucide-react";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { getCurrentUser } from "@/lib/data-access/user";
 import { cn } from "@/lib/utils/cn";
 
-export default function HomePage() {
+export default async function HomePage() {
+  const user = await getCurrentUser();
+
   return (
     <main className="container">
       <div className="text-center">
-        <h2 className="text-3xl sm:text-4xl font-bold">Welcome back, Sarah!</h2>
+        <h2 className="text-3xl sm:text-4xl font-bold">
+          Welcome back, {user.firstName}!
+        </h2>
         <p className="text-muted-foreground mt-2 text-lg">
           Ready to sharpen your musical ear today?
         </p>

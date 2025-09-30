@@ -1,51 +1,30 @@
-import mongoose from "mongoose";
+import { MongoClient } from "mongodb";
 import { env } from "@/lib/env/env";
 
 const MONGODB_URI = env.MONGODB_URI;
 
+const options = {};
+
+let client: MongoClient;
+let clientPromise: Promise<MongoClient>;
+
 if (!MONGODB_URI) {
-  throw new Error("Please define the MONGODB_URI environment variable");
+  throw new Error("Missing MONGODB_URI");
 }
 
-interface MongooseCache {
-  conn: typeof mongoose | null;
-  promise: Promise<typeof mongoose> | null;
+declare global {
+  var _mongoClientPromise: Promise<MongoClient> | undefined;
 }
 
-const globalWithMongoose = global as typeof globalThis & {
-  mongoose?: MongooseCache;
-};
-
-const cached: MongooseCache = globalWithMongoose.mongoose || {
-  conn: null,
-  promise: null,
-};
-
-if (!globalWithMongoose.mongoose) {
-  globalWithMongoose.mongoose = cached;
-}
-
-async function connectDB(): Promise<typeof mongoose> {
-  if (cached.conn) {
-    return cached.conn;
+if (process.env.NODE_ENV === "development") {
+  if (!globalThis._mongoClientPromise) {
+    client = new MongoClient(MONGODB_URI, options);
+    globalThis._mongoClientPromise = client.connect();
   }
-
-  if (!cached.promise) {
-    const opts = {
-      bufferCommands: false,
-    };
-
-    cached.promise = mongoose.connect(MONGODB_URI, opts);
-  }
-
-  try {
-    cached.conn = await cached.promise;
-  } catch (error) {
-    cached.promise = null;
-    throw error;
-  }
-
-  return cached.conn;
+  clientPromise = globalThis._mongoClientPromise;
+} else {
+  client = new MongoClient(MONGODB_URI, options);
+  clientPromise = client.connect();
 }
 
-export default connectDB;
+export default clientPromise;

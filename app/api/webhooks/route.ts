@@ -1,17 +1,20 @@
 import { verifyWebhook } from "@clerk/nextjs/webhooks";
 import type { NextRequest } from "next/server";
-import connectDB from "@/lib/db/db";
-import { User } from "@/lib/db/models/User.model";
+import { initUserDataSchema } from "@/app/api/webhooks/types";
+import { createUser } from "@/lib/data-access/user";
 
 export async function POST(req: NextRequest) {
+  console.log("Webhook request received");
   try {
     const evt = await verifyWebhook(req);
+    console.log("Webhook event:", evt.type, evt.data);
 
     const { id } = evt.data;
     const eventType = evt.type;
 
     if (eventType === "user.created") {
       const { email_addresses, first_name, image_url, last_name } = evt.data;
+      console.log("EVT TYPE: ", evt.type);
 
       const userData = {
         clerkId: id,
@@ -20,10 +23,17 @@ export async function POST(req: NextRequest) {
         email: email_addresses[0].email_address,
         avatar: image_url,
       };
+      console.log("USER DATA: ", userData);
+
+      const validation = initUserDataSchema.safeParse(userData);
+
+      if (!validation.success) {
+        console.error("Validation failed:", validation.error.message);
+        return new Response("Invalid user data", { status: 200 });
+      }
 
       try {
-        await connectDB();
-        await User.create(userData);
+        await createUser(validation.data);
       } catch (dbError) {
         console.error("Database error creating user:", dbError);
       }
