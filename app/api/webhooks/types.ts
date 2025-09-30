@@ -35,6 +35,7 @@ export const userSettingsSchema = z.object({
 });
 
 export const userSchema = z.object({
+  _id: z.string().min(1, { error: "_id is required" }),
   clerkId: z.string().min(1, { error: "clerkId is required" }),
   firstName: z.string().min(1, { error: "firstName is required" }),
   lastName: z.string().min(1, { error: "lastName is required" }),

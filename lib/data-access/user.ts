@@ -3,8 +3,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { cache } from "react";
-import type { InitUserData } from "@/app/api/webhooks/types";
-import type { User } from "@/app/types";
+import type { User } from "@/app/api/webhooks/types";
 import clientPromise from "@/lib/db/db";
 
 export const getCurrentUser = cache(async (): Promise<User> => {
@@ -29,7 +28,7 @@ export const getCurrentUser = cache(async (): Promise<User> => {
   }
 });
 
-export async function createUser(userData: InitUserData) {
+export async function createUser(userData: Omit<User, "_id">) {
   try {
     const client = await clientPromise;
     const db = client.db("prod");
