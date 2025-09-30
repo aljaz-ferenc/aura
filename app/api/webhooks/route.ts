@@ -1,6 +1,6 @@
 import { verifyWebhook } from "@clerk/nextjs/webhooks";
 import type { NextRequest } from "next/server";
-import { userSchema } from "@/app/api/webhooks/types";
+import { createUserSchema } from "@/app/api/webhooks/types";
 import { createUser } from "@/lib/data-access/user";
 
 export async function POST(req: NextRequest) {
@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
         avatar: image_url,
       };
 
-      const validation = userSchema.safeParse(clerkData);
+      const validation = createUserSchema.safeParse(clerkData);
 
       if (!validation.success) {
         console.error("Validation failed:", validation.error.message);

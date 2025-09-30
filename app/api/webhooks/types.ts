@@ -34,8 +34,7 @@ export const userSettingsSchema = z.object({
   scales: scalesSettingsSchema,
 });
 
-export const userSchema = z.object({
-  _id: z.string().min(1, { error: "_id is required" }),
+export const createUserSchema = z.object({
   clerkId: z.string().min(1, { error: "clerkId is required" }),
   firstName: z.string().min(1, { error: "firstName is required" }),
   lastName: z.string().min(1, { error: "lastName is required" }),
@@ -59,6 +58,10 @@ export const userSchema = z.object({
       direction: ["ascending"],
     },
   }),
+});
+
+export const userSchema = createUserSchema.extend({
+  _id: z.string().min(1, { error: "_id is required" }),
 });
 
 export type User = z.infer<typeof userSchema>;
